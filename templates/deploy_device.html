@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Deploy Device</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Deploy New Device</h2>
+    <form action="/devices/deploy" method="post">
+      <label>Hostname:</label>
+      <input type="text" name="hostname" required />
+
+      <label>IP Address:</label>
+      <input type="text" name="ip_address" required />
+
+      <label>Platform:</label>
+      <input type="text" name="platform" required />
+
+      <label>Username:</label>
+      <input type="text" name="username" required />
+
+      <label>Password:</label>
+      <input type="password" name="password" required />
+
+      <button type="submit">Deploy</button>
+    </form>
+    <a href="/dashboard"><button>Back to Dashboard</button></a>
+  </div>
+</body>
+</html>

@@ -9,14 +9,22 @@
         <h2>Welcome to the Dashboard</h2>
         <p>You successfully logged in.</p>
 
-        <button onclick="location.href='/devices'">View Devices</button>
+        <a href="/devices" class="button-link">
+            <button>View Devices</button>
+        </a>
 
-        <button onclick="location.href='/devices/deploy'">Deploy Devices</button>
+        <a href="/deploy_device" class="button-link">
+            <button>Deploy Devices</button>
+        </a>
 
-        <button onclick="editDevice()">Edit Device</button>
+        <a href="/edit_device" class="button-link">
+            <button>Edit Device</button>
+        </a>
 
         <br><br>
-        <button onclick="location.href='/'">Logout</button>
+        <a href="/">
+            <button>Logout</button>
+        </a>
     </div>
 
     <script>

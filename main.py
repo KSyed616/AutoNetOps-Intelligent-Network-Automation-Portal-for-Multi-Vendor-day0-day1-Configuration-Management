@@ -31,28 +31,67 @@ async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
 
-@app.get("/devices")
-def get_devices():
+@app.get("/devices", response_class=HTMLResponse)
+def get_devices(request: Request):
     devices = get_deployed()
-    return {"Current Onboarded devices": devices}
+    return templates.TemplateResponse("get_device.html",
+                                      {
+                                          "request": request,
+                                          "devices": devices
+                                      })
 
 
-@app.post("/devices/deploy")
-def deploy_device(devices: List[Device]):
-    for device in devices:
-        deploy(device)
+@app.get("/deploy_device", response_class=HTMLResponse)
+def deploy_device_page(request: Request):
+    return templates.TemplateResponse("deploy_device.html", {"request": request})
+
+
+@app.get("/edit_device", response_class=HTMLResponse)
+def deploy_device_page(request: Request):
+    return templates.TemplateResponse("edit_device.html", {"request": request})
+
+
+@app.post("/devices/deploy", response_class=HTMLResponse)
+def deploy_device(hostname: str = Form(...),
+                  ip_address: str = Form(...),
+                  platform: str = Form(...),
+                  username: str = Form(...),
+                  password: str = Form(...)
+                  ):
+    device = Device(
+        hostname=hostname,
+        ip_address=ip_address,
+        platform=platform,
+        username=username,
+        password=password
+    )
+    deploy(device)
+
     return {"Device Deployed"}
 
 
 @app.put("/devices/deploy/{device_id}")
 def edit_device(
-        device_id: int = Path(...),
-        device: Device = None
+        device_id: int,
+        hostname: str = Form(...),
+        ip_address: str = Form(...),
+        platform: str = Form(...),
+        username: str = Form(...),
+        password: str = Form(...)
 ):
+    device = Device(
+        hostname=hostname,
+        ip_address=ip_address,
+        platform=platform,
+        username=username,
+        password=password
+    )
+
     edit_onboard(device_id, device)
     return {"Deployed Device Edited"}
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
