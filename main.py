@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, Form, Path
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette import status
 
 from cml import get_deployed, deploy, edit_onboard
 from schema import Device
@@ -51,7 +52,7 @@ def deploy_device_page(request: Request):
     return templates.TemplateResponse("edit_device.html", {"request": request})
 
 
-@app.post("/devices/deploy", response_class=HTMLResponse)
+@app.post("/devices/deploy")
 def deploy_device(hostname: str = Form(...),
                   ip_address: str = Form(...),
                   platform: str = Form(...),
@@ -67,7 +68,7 @@ def deploy_device(hostname: str = Form(...),
     )
     deploy(device)
 
-    return {"Device Deployed"}
+    return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.put("/devices/deploy/{device_id}")
@@ -88,7 +89,7 @@ def edit_device(
     )
 
     edit_onboard(device_id, device)
-    return {"Deployed Device Edited"}
+    return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 
 if __name__ == "__main__":

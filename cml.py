@@ -42,7 +42,7 @@ def deploy(device: Device):
 
     db_cursor = conn.cursor()
     sql = """
-    INSERT INTO device (hostname, ip_address, platform, netconf_port username, password)
+    INSERT INTO device (hostname, ip_address, platform, netconf_port, username, password)
     VALUES (%s, %s, %s, %s, %s, %s)
     """
     values = (device.hostname,
