@@ -1,7 +1,6 @@
 from typing import List
 
-from click import Path
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, Path
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -10,21 +9,26 @@ from cml import get_deployed, deploy, edit_onboard
 from schema import Device
 
 app = FastAPI()
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 templates = Jinja2Templates(directory="templates")
 
 
-# LOGIN PAGE
 @app.get("/", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-# LOGIN HANDLER
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
-    # Accept any credentials, no auth logic (placeholder)
+    # Accept all credentials for now (placeholder logic)
     return RedirectResponse(url="/dashboard", status_code=303)
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
 
 
 @app.get("/devices")
@@ -41,13 +45,14 @@ def deploy_device(devices: List[Device]):
 
 
 @app.put("/devices/deploy/{device_id}")
-def edit_device(devices_id: int = Path(...),
-                device: Device = None):
-    edit_onboard(devices_id, device)
+def edit_device(
+        device_id: int = Path(...),
+        device: Device = None
+):
+    edit_onboard(device_id, device)
     return {"Deployed Device Edited"}
 
 
-# DASHBOARD PAGE
-@app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)

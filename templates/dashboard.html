@@ -8,7 +8,24 @@
     <div class="container">
         <h2>Welcome to the Dashboard</h2>
         <p>You successfully logged in.</p>
+
+        <button onclick="location.href='/devices'">View Devices</button>
+
+        <button onclick="location.href='/devices/deploy'">Deploy Devices</button>
+
+        <button onclick="editDevice()">Edit Device</button>
+
+        <br><br>
         <button onclick="location.href='/'">Logout</button>
     </div>
+
+    <script>
+        function editDevice() {
+            const deviceId = prompt("Enter Device ID to edit:");
+            if (deviceId) {
+                window.location.href = `/devices/deploy/${deviceId}`;
+            }
+        }
+    </script>
 </body>
 </html>
