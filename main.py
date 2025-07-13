@@ -34,7 +34,7 @@ async def dashboard(request: Request):
 @app.get("/devices", response_class=HTMLResponse)
 def get_devices(request: Request):
     devices = get_deployed()
-    return templates.TemplateResponse("get_device.html",
+    return templates.TemplateResponse("devices.html",
                                       {
                                           "request": request,
                                           "devices": devices
