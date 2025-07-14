@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS AutoNetOps;
 USE AutoNetOps;
 
 CREATE TABLE IF NOT EXISTS device (
-    device_id INT PRIMARY KEY,
+    device_id INT AUTO_INCREMENT PRIMARY KEY,
     hostname VARCHAR(255),
     ip_address VARCHAR(255),
     platform VARCHAR(255),
