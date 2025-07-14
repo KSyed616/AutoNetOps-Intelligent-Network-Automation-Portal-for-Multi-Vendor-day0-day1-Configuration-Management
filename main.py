@@ -47,9 +47,15 @@ def deploy_device_page(request: Request):
     return templates.TemplateResponse("deploy_device.html", {"request": request})
 
 
-@app.get("/edit_device", response_class=HTMLResponse)
-def deploy_device_page(request: Request):
-    return templates.TemplateResponse("edit_device.html", {"request": request})
+@app.get("/devices/deploy/{device_id}", response_class=HTMLResponse)
+async def edit_device_page(device_id: int, request: Request):
+    return templates.TemplateResponse(
+        "edit_device.html",
+        {
+            "request": request,
+            "device_id": device_id
+        }
+    )
 
 
 @app.post("/devices/deploy")
@@ -63,6 +69,7 @@ def deploy_device(hostname: str = Form(...),
         hostname=hostname,
         ip_address=ip_address,
         platform=platform,
+        netconf_port=830,
         username=username,
         password=password
     )
@@ -84,6 +91,7 @@ def edit_device(
         hostname=hostname,
         ip_address=ip_address,
         platform=platform,
+        netconf_port=830,
         username=username,
         password=password
     )
