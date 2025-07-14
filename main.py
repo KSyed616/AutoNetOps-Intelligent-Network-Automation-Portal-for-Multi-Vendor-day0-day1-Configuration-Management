@@ -47,8 +47,8 @@ def deploy_device_page(request: Request):
     return templates.TemplateResponse("deploy_device.html", {"request": request})
 
 
-@app.get("/devices/deploy/{device_id}", response_class=HTMLResponse)
-async def edit_device_page(device_id: int, request: Request):
+@app.get("/devices/deploy_edit/{device_id}", response_class=HTMLResponse)
+def edit_device_page(device_id: int, request: Request):
     return templates.TemplateResponse(
         "edit_device.html",
         {
@@ -78,7 +78,7 @@ def deploy_device(hostname: str = Form(...),
     return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@app.put("/devices/deploy/{device_id}")
+@app.post("/devices/deploy/{device_id}")
 def edit_device(
         device_id: int,
         hostname: str = Form(...),
