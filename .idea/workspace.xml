@@ -5,9 +5,60 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="Combined both fastapi/flask">
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/INSTALLER" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/METADATA" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/RECORD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/REQUESTED" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/WHEEL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/entry_points.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi-0.115.14.dist-info/licenses/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/fastapi/routing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette-0.46.2.dist-info/INSTALLER" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette-0.46.2.dist-info/METADATA" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette-0.46.2.dist-info/RECORD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette-0.46.2.dist-info/WHEEL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette-0.46.2.dist-info/licenses/LICENSE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/_exception_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/_exception_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/applications.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/applications.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/authentication.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/authentication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/background.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/background.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/concurrency.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/concurrency.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/convertors.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/convertors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/datastructures.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/datastructures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/endpoints.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/formparsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/formparsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/authentication.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/authentication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/cors.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/cors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/gzip.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/gzip.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/sessions.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/sessions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/trustedhost.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/trustedhost.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/middleware/wsgi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/responses.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/responses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/routing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/staticfiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/staticfiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/templating.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/templating.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/testclient.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/testclient.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/websockets.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/starlette/websockets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions-4.14.0.dist-info/INSTALLER" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions-4.14.0.dist-info/METADATA" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions-4.14.0.dist-info/RECORD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions-4.14.0.dist-info/WHEEL" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions-4.14.0.dist-info/licenses/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Lib/site-packages/typing_extensions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Scripts/fastapi.exe" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Scripts/fastapi.exe" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,21 +88,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Python.app.executor": "Run",
-    "Python.cml.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.templating.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/syedk/PycharmProjects/COE892/Waste_Management",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cml.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.templating.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/syedk/PycharmProjects/COE892/Waste_Management&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -124,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752449994751</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Combined both fastapi/flask">
+      <option name="closed" value="true" />
+      <created>1752451718263</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1752451718263</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

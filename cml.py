@@ -1,3 +1,5 @@
+import os
+
 import requests
 import netmiko
 import mysql.connector
@@ -16,11 +18,11 @@ def cml_login(info: Login):
 # insert basic info about device (day0) configs
 def get_deployed():
     conn = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        password="password",
-        database="AutoNetOps"
+        host=os.getenv("DB_HOST", "127.0.0.1"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        database=os.getenv("DB_NAME", "AutoNetOps")
     )
 
     db_cursor = conn.cursor()
@@ -33,11 +35,11 @@ def get_deployed():
 
 def deploy(device: Device):
     conn = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        password="password",
-        database="AutoNetOps"
+        host=os.getenv("DB_HOST", "127.0.0.1"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        database=os.getenv("DB_NAME", "AutoNetOps")
     )
 
     db_cursor = conn.cursor()
@@ -61,11 +63,11 @@ def deploy(device: Device):
 
 def edit_onboard(device_id: int, device: Device):
     conn = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user="root",
-        password="password",
-        database="AutoNetOps"
+        host=os.getenv("DB_HOST", "127.0.0.1"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        database=os.getenv("DB_NAME", "AutoNetOps")
     )
 
     db_cursor = conn.cursor()
