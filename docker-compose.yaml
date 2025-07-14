@@ -8,11 +8,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: AutoNetOps
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
-
+    volumes:
+      - mysql_data:/var/lib/mysql
   app:
     build: .
     container_name: fastapi_app
@@ -27,3 +26,6 @@ services:
       DB_USER: root
       DB_PASSWORD: password
       DB_NAME: AutoNetOps
+
+volumes:
+  mysql_data:
