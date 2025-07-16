@@ -6,8 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from cml import get_deployed, deploy, edit_onboard
-from schema import Device
+from cml import get_deployed, deploy, edit_onboard, cml_login
+from schema import Device, Login
 
 app = FastAPI()
 
@@ -17,13 +17,17 @@ templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/", response_class=HTMLResponse)
-async def login_page(request: Request):
+def login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/login")
-async def login(username: str = Form(...), password: str = Form(...)):
-    # Accept all credentials for now (placeholder logic)
+def login(username: str = Form(...), password: str = Form(...), cml_url: str = Form(...)):
+
+    user = Login(cml_url=cml_url,
+                 username=username,
+                 password=password)
+    token = cml_login(user)
     return RedirectResponse(url="/dashboard", status_code=303)
 
 

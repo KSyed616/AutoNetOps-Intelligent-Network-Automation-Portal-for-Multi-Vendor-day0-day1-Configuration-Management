@@ -11,3 +11,11 @@ CREATE TABLE IF NOT EXISTS device (
     username VARCHAR(255),
     password VARCHAR(255)
 );
+
+
+CREATE TABLE IF NOT EXISTS cmlData (
+    cml_url VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    token VARCHAR(255)
+);
