@@ -1,0 +1,12 @@
+hostname {{ hostname }}
+ip domain_name {{ domain_name }}
+crypto key generate rsa modulus 2048
+ip ssh version 2
+
+username {{ username }} secret {{ password }}
+line vty 0 4
+    login local
+    transport input ssh
+
+netconf-yang
+restconf

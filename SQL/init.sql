@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS cmlData (
     cml_url VARCHAR(255) PRIMARY KEY,
     username VARCHAR(255),
     password VARCHAR(255),
-    token VARCHAR(255)
+    token VARCHAR(255),
+    lab_id VARCHAR(255)
 );

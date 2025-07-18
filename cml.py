@@ -34,16 +34,29 @@ def cml_login(info: Login):
 
     if response.status_code == 200:
         token = response.text
+        headers = {
+            "Authorization": f"Bearer {token}"
+        }
+        url = CML_URL + "/api/v0/labs"
+
+        response = requests.get(
+            url,
+            headers=headers,
+            verify=False
+        )
+
+        lab_id = response.text
 
         db_cursor = conn.cursor()
         sql = """
-            INSERT INTO cmlData (cml_url, username, password, token)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO cmlData (cml_url, username, password, token, lab_id)
+            VALUES (%s, %s, %s, %s, %s)
             """
         values = (CML_URL,
                   user,
                   password,
-                  token)
+                  token,
+                  lab_id)
 
         db_cursor.execute(sql, values)
         conn.commit()
@@ -155,21 +168,63 @@ def day0(cml_url):
     db_cursor.execute("SELECT * FROM cmlData WHERE cml_url = %s", cml_url)
     row = db_cursor.fetchone()
 
-    if row:
-        cml_url_db, username_db, password_db, token_db = row
-    else:
-        return "no records found"
+    cml_url = row[0]
+    token = row[3]
+    lab_id = row[4]
 
-    url = cml_url_db + "/api/v0/labs"
     headers = {
-        "Authorization": f"Bearer {token_db}"
+        "Authorization": f"Bearer {token}"
     }
+    url = cml_url + f"/api/v0/labs/{lab_id}/nodes"
 
-    response = requests.post(
+    response = requests.get(
         url,
-        json={
-            "lab_title": "AutoNetOps"
-        },
         headers=headers,
         verify=False
     )
+
+    nodes = response.json()
+
+    for node_id in nodes:
+        node_type = identify_node(headers, cml_url, lab_id, node_id)
+        if node_type == "router":
+
+            url = cml_url + f"/api/v0/labs/{lab_id}/nodes/{node_id}"
+
+            response = requests.patch(
+                url,
+                json={
+
+                },
+                headers=headers,
+                verify=False
+            )
+
+
+            "router config"
+        else:
+            "switch config"
+
+def identify_node(headers, cml_url, lab_id, node_id):
+
+    url = cml_url + f"/api/v0/labs/{lab_id}/nodes/{node_id}"
+
+    response = requests.get(
+        url,
+        headers=headers,
+        verify=False
+    )
+
+    node_info = response.json()
+
+    if node_info["node_definition"] == "cat9000v-s1":
+        return "router"
+    else:
+        return "switch"
+
+
+
+
+
+
+

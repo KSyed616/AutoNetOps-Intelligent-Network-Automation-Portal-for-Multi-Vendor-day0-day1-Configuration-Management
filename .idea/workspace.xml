@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="SQL Docker config">
-      <change beforePath="$PROJECT_DIR$/.idea/AutoNetOps_Intelligent_Network_Automation_Portal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutoNetOps_Intelligent_Network_Automation_Portal.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="Day 0 Start">
+      <change afterPath="$PROJECT_DIR$/configurations/day0_router_config.j2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configurations/day0_switch_config.j2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SQL/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cml.py" beforeDir="false" afterPath="$PROJECT_DIR$/cml.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/deploy_device.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/deploy_device.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/edit_device.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/edit_device.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,8 +179,19 @@
       <option name="project" value="LOCAL" />
       <updated>1752509566995</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Day 0 Start">
+      <option name="closed" value="true" />
+      <created>1752703562293</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752703562293</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.j2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -198,6 +208,7 @@
     <MESSAGE value="First Commit" />
     <MESSAGE value="Combined both fastapi/flask" />
     <MESSAGE value="SQL Docker config" />
-    <option name="LAST_COMMIT_MESSAGE" value="SQL Docker config" />
+    <MESSAGE value="Day 0 Start" />
+    <option name="LAST_COMMIT_MESSAGE" value="Day 0 Start" />
   </component>
 </project>
