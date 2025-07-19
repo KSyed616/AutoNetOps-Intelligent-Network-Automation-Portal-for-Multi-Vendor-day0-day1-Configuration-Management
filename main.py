@@ -1,6 +1,4 @@
-from typing import List
-
-from fastapi import FastAPI, Request, Form, Path
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -26,7 +24,7 @@ def login(username: str = Form(...), password: str = Form(...), cml_url: str = F
 
     user = Login(cml_url=cml_url,
                  username=username,
-                 password=password)
+                 pwd=password)
     token = cml_login(user)
     return RedirectResponse(url="/dashboard", status_code=303)
 
