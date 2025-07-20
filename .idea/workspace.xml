@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="Combined both fastapi/flask">
+    <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="Day 0 Start">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/deploy_device.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/deploy_device.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cml.py" beforeDir="false" afterPath="$PROJECT_DIR$/cml.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +89,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-598b0484d0b5-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.74" />
+        <option value="bundled-python-sdk-5a2391486177-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -176,8 +174,19 @@
       <option name="project" value="LOCAL" />
       <updated>1752509566995</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Day 0 Start">
+      <option name="closed" value="true" />
+      <created>1752703562293</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752703562293</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.j2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -194,6 +203,7 @@
     <MESSAGE value="First Commit" />
     <MESSAGE value="Combined both fastapi/flask" />
     <MESSAGE value="SQL Docker config" />
-    <option name="LAST_COMMIT_MESSAGE" value="SQL Docker config" />
+    <MESSAGE value="Day 0 Start" />
+    <option name="LAST_COMMIT_MESSAGE" value="Day 0 Start" />
   </component>
 </project>

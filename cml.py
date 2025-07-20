@@ -1,9 +1,8 @@
 import os
 import re
 
-import requests
-import netmiko
 import mysql.connector
+import requests
 from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
@@ -51,20 +50,38 @@ def cml_login(info: Login):
 
         db_cursor = conn.cursor()
         sql = """
-            INSERT INTO cmlData (cml_url, username, password, token, lab_id)
-            VALUES (%s, %s, %s, %s, %s)
+                SELECT * FROM cmlData WHERE cml_url = %s
             """
-        values = (CML_URL,
-                  user,
-                  password,
-                  token,
-                  lab_id)
 
-        db_cursor.execute(sql, values)
-        conn.commit()
+        db_cursor.execute(sql, (CML_URL,))
+        row = db_cursor.fetchone()
 
-        db_cursor.close()
-        conn.close()
+        if not row:
+            sql = """
+                    INSERT INTO cmlData (cml_url, username, password, token, lab_id)
+                    VALUES (%s, %s, %s, %s, %s)
+                   """
+            values = (CML_URL,
+                      user,
+                      password,
+                      token,
+                      lab_id)
+
+            db_cursor.execute(sql, values)
+            conn.commit()
+
+            db_cursor.close()
+            conn.close()
+        else:
+            sql = """
+                      UPDATE cmlData SET token = %s WHERE cml_url = %s
+                   """
+            values = (token, CML_URL)
+            db_cursor.execute(sql, values)
+            conn.commit()
+
+            db_cursor.close()
+            conn.close()
 
         return token
     else:
