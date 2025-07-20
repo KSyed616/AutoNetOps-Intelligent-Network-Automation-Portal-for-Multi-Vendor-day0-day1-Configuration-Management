@@ -208,7 +208,6 @@ def day0(cml_url):
             "syslog_server": "2.2.2.2"
         }
 
-
         if node_type == "router":
 
             configuration = config("day0_router_config.j2", context)
@@ -274,10 +273,10 @@ def identify_node(headers, cml_url, lab_id, node_id):
         return "switch"
 
 
-
 def get_suffix(value):
     match = re.search(r"(\d+)$", value)
     return match.group(1) if match else None
+
 
 def config(template_name, context: dict):
     env = Environment(loader=FileSystemLoader("configurations"))

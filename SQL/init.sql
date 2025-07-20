@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS device (
     platform VARCHAR(255),
     netconf_port INT,
     username VARCHAR(255),
-    password VARCHAR(255)
+    password VARCHAR(255),
+    device_type VARCHAR(255),
+    node_id VARCHAR(255)
 );
 
 

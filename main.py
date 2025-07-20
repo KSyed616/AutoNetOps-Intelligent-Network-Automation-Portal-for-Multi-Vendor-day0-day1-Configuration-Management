@@ -65,7 +65,8 @@ def deploy_device(hostname: str = Form(...),
                   ip_address: str = Form(...),
                   platform: str = Form(...),
                   username: str = Form(...),
-                  password: str = Form(...)
+                  password: str = Form(...),
+                  device_type: str = Form(...)
                   ):
     device = Device(
         hostname=hostname,
@@ -73,7 +74,8 @@ def deploy_device(hostname: str = Form(...),
         platform=platform,
         netconf_port=830,
         username=username,
-        password=password
+        password=password,
+        device_type = device_type
     )
     deploy(device)
 
@@ -87,7 +89,8 @@ def edit_device(
         ip_address: str = Form(...),
         platform: str = Form(...),
         username: str = Form(...),
-        password: str = Form(...)
+        password: str = Form(...),
+        device_type: str = Form(...)
 ):
     device = Device(
         hostname=hostname,
@@ -95,7 +98,8 @@ def edit_device(
         platform=platform,
         netconf_port=830,
         username=username,
-        password=password
+        password=password,
+        device_type=device_type
     )
 
     edit_onboard(device_id, device)

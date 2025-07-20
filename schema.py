@@ -16,6 +16,7 @@ class Device(BaseModel):
     netconf_port: int
     username: str
     password: str
+    device_type: str
 
 
 class TemplateParameter(BaseModel):
@@ -32,3 +33,5 @@ class Template(BaseModel):
     yang_module: str
     yang_paths: List[str]
     parameters: List[TemplateParameter]
+
+
