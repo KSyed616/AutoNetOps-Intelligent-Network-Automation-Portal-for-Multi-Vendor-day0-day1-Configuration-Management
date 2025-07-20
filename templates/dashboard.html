@@ -19,6 +19,8 @@
 
         <button class="button-link" onclick="editDevice()">Edit Device</button>
 
+        <button class="button-link" onclick="day0Devices()">Day 0</button>
+
         <br><br>
         <a href="/">
             <button>Logout</button>
@@ -33,5 +35,25 @@
             }
         }
     </script>
+
+    <script>
+        function day0Devices() {
+            const cmlURL = prompt("Enter CML URL to day0 devices:");
+            if (cmlURL) {
+                fetch('/day0/${encodeURIComponent(cmlURL)}',{
+                    method: "POST",
+                )}
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.status);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Day0 configuration failed");
+                });
+            }
+        }
+    </script>
+
 </body>
 </html>

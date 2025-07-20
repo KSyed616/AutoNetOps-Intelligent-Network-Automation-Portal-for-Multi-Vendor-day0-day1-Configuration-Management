@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from cml import get_deployed, deploy, edit_onboard, cml_login
+from cml import get_deployed, deploy, edit_onboard, cml_login, day0
 from schema import Device, Login
 
 app = FastAPI()
@@ -104,6 +104,12 @@ def edit_device(
 
     edit_onboard(device_id, device)
     return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/day0/{cmlUrl}")
+def day0_devices(cml_url: str):
+    day0(cml_url)
+
+
 
 
 if __name__ == "__main__":
