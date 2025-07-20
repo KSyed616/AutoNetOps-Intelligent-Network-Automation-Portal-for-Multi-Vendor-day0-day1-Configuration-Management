@@ -21,7 +21,6 @@ def login_page(request: Request):
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...), cml_url: str = Form(...)):
-
     user = Login(cml_url=cml_url,
                  username=username,
                  pwd=password)
@@ -75,7 +74,7 @@ def deploy_device(hostname: str = Form(...),
         netconf_port=830,
         username=username,
         password=password,
-        device_type = device_type
+        device_type=device_type
     )
     deploy(device)
 
@@ -105,11 +104,13 @@ def edit_device(
     edit_onboard(device_id, device)
     return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
-@app.post("/day0/{cmlUrl}")
-def day0_devices(cml_url: str):
+
+@app.post("/day0")
+async def day0_devices(request: Request):
+    data = await request.json()
+    cml_url = data.get("cml_url")
     day0(cml_url)
-
-
+    return {"status": "Day 0 config pushed"}
 
 
 if __name__ == "__main__":

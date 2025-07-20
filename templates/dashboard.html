@@ -38,11 +38,15 @@
 
     <script>
         function day0Devices() {
-            const cmlURL = prompt("Enter CML URL to day0 devices:");
-            if (cmlURL) {
-                fetch('/day0/${encodeURIComponent(cmlURL)}',{
+            const cmURL = prompt("Enter CML URL to day0 devices:");
+            if (cmURL) {
+                fetch('/day0', {
                     method: "POST",
-                )}
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cml_url: cmURL })
+                })
                 .then(response => response.json())
                 .then(data => {
                     alert(data.status);
