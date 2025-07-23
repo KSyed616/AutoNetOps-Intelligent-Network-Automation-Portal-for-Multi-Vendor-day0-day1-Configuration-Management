@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from cml import get_deployed, deploy, edit_onboard, cml_login, day0
+from cml import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
 app = FastAPI()
@@ -20,9 +20,8 @@ def login_page(request: Request):
 
 
 @app.post("/login")
-def login(username: str = Form(...), password: str = Form(...), cml_url: str = Form(...)):
-    user = Login(cml_url=cml_url,
-                 username=username,
+def login(username: str = Form(...), password: str = Form(...)):
+    user = Login(username=username,
                  pwd=password)
     token = cml_login(user)
     return RedirectResponse(url="/dashboard", status_code=303)
@@ -46,6 +45,12 @@ def get_devices(request: Request):
 @app.get("/deploy_device", response_class=HTMLResponse)
 def deploy_device_page(request: Request):
     return templates.TemplateResponse("deploy_device.html", {"request": request})
+
+
+@app.get("/day0_menu", response_class=HTMLResponse)
+def select_day0_devices(request: Request):
+    devices = get_day0()
+    return templates.TemplateResponse("day0_devices.html", {"request": request, "devices": devices})
 
 
 @app.get("/devices/deploy_edit/{device_id}", response_class=HTMLResponse)
@@ -105,12 +110,16 @@ def edit_device(
     return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@app.post("/day0")
-async def day0_devices(request: Request):
-    data = await request.json()
-    cml_url = data.get("cml_url")
-    day0(cml_url)
-    return {"status": "Day 0 config pushed"}
+@app.post("/day0/all")
+def day0_all_devices():
+    day0()
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+
+@app.post("/day0/single")
+def day0_single_device(device_id: int = Form(...)):
+    day0_single(device_id)
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 
 if __name__ == "__main__":

@@ -1,30 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" />
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
     <div class="container">
         <h2>Welcome to the Dashboard</h2>
         <p>You successfully logged in.</p>
 
-        <a href="/devices" class="button-link">
-            <button>View Devices</button>
-        </a>
+        <div class="button-group">
+            <a href="/devices" class="button-link">
+                <button>View Devices</button>
+            </a>
 
-        <a href="/deploy_device" class="button-link">
-            <button>Deploy Devices</button>
-        </a>
+            <a href="/deploy_device" class="button-link">
+                <button>Deploy Devices</button>
+            </a>
 
-        <button class="button-link" onclick="editDevice()">Edit Device</button>
+            <button class="button-link" onclick="editDevice()">Edit Device</button>
 
-        <button class="button-link" onclick="day0Devices()">Day 0</button>
+            <a href="/day0_menu" class="button-link">
+                <button>Day 0 Configuration</button>
+            </a>
 
-        <br><br>
-        <a href="/">
-            <button>Logout</button>
-        </a>
+            <a href="/" class="button-link">
+                <button>Logout</button>
+            </a>
+        </div>
     </div>
 
     <script>
@@ -35,29 +39,5 @@
             }
         }
     </script>
-
-    <script>
-        function day0Devices() {
-            const cmURL = prompt("Enter CML URL to day0 devices:");
-            if (cmURL) {
-                fetch('/day0', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ cml_url: cmURL })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.status);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Day0 configuration failed");
-                });
-            }
-        }
-    </script>
-
 </body>
 </html>

@@ -16,7 +16,13 @@
       <input type="text" name="ip_address" required />
 
       <label>Platform:</label>
-      <input type="text" name="platform" required />
+      <select name="platform" required>
+        <option value="">Select Platform</option>
+        <option value="cisco">Cisco</option>
+        <option value="juniper">Juniper</option>
+        <option value="nokia">Nokia</option>
+        <option value="arista">Arista</option>
+      </select>
 
       <label>SSH Username:</label>
       <input type="text" name="username" required />

@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44342a32-7a97-4721-af84-ee09e7c01f74" name="Changes" comment="Day 0 Start">
+      <change afterPath="$PROJECT_DIR$/templates/day0_devices.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/ciscoHandler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/juniperHandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/AutoNetOps_Intelligent_Network_Automation_Portal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutoNetOps_Intelligent_Network_Automation_Portal.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cml.py" beforeDir="false" afterPath="$PROJECT_DIR$/cml.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configurations/day0_router_config.j2" beforeDir="false" afterPath="$PROJECT_DIR$/configurations/cisco/day0_router_config.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configurations/day0_switch_config.j2" beforeDir="false" afterPath="$PROJECT_DIR$/configurations/cisco/day0_switch_config.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/deploy_device.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/deploy_device.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/edit_device.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/edit_device.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -64,6 +76,11 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\syedk\PycharmProjects\CN8001\AutoNetOps_Intelligent_Network_Automation_Portal\configurations\cisco" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
@@ -182,7 +199,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752703562293</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Day 0 Start">
+      <option name="closed" value="true" />
+      <created>1753033707448</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1753033707448</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="UnknownFeatures">
