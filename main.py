@@ -4,7 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from cml import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
+from day1 import day1_hello
+from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
 app = FastAPI()
@@ -51,6 +52,12 @@ def deploy_device_page(request: Request):
 def select_day0_devices(request: Request):
     devices = get_day0()
     return templates.TemplateResponse("day0_devices.html", {"request": request, "devices": devices})
+
+
+@app.get("/day1_menu", response_class=HTMLResponse)
+def select_day1_devices(request: Request):
+    devices = get_day0()
+    return templates.TemplateResponse("day1_devices.html", {"request": request, "devices": devices})
 
 
 @app.get("/devices/deploy_edit/{device_id}", response_class=HTMLResponse)
@@ -120,6 +127,11 @@ def day0_all_devices():
 def day0_single_device(device_id: int = Form(...)):
     day0_single(device_id)
     return RedirectResponse(url="/dashboard", status_code=303)
+
+
+@app.post("/day1")
+def day1(device_id: int = Form(...)):
+    day1_hello(device_id)
 
 
 if __name__ == "__main__":
