@@ -347,7 +347,6 @@ def identify_node(headers, cml_url, lab_id, node_id):
 
         # Match suffix AND type (router, switch, etc.)
         if hostname_suffix == label_suffix and device_type.lower() == label_type:
-            print(f"✅ Matched: {hostname} ↔ {label}")
             db_cursor.execute(
                 "UPDATE device SET node_id = %s WHERE device_id = %s",
                 (node_id, device_id)
