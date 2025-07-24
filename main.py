@@ -129,9 +129,10 @@ def day0_single_device(device_id: int = Form(...)):
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
-@app.post("/day1")
+@app.post("/day1_hello")
 def day1(device_id: int = Form(...)):
     day1_hello(device_id)
+    return RedirectResponse(url="/day1_menu", status_code=303)
 
 
 if __name__ == "__main__":
