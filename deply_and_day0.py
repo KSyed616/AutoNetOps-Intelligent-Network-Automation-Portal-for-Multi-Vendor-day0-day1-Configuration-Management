@@ -331,22 +331,11 @@ def identify_node(headers, cml_url, lab_id, node_id):
     label = node_info["label"].strip().lower()
     label_suffix = get_suffix(label)
 
-    # Determine node type from label (e.g. routers-0 → router, sw1 → switch)
-    if label.startswith("router"):
-        label_type = "router"
-    elif label.startswith("sw"):
-        label_type = "switch"
-    elif label.startswith("ext-conn"):
-        label_type = "ext-conn"
-    else:
-        label_type = ""
-
-    db_cursor.execute("SELECT device_id, hostname, device_type FROM device")
-    for device_id, hostname, device_type in db_cursor.fetchall():
+    db_cursor.execute("SELECT device_id, hostname FROM device")
+    for device_id, hostname in db_cursor.fetchall():
         hostname_suffix = get_suffix(hostname.strip().lower())
 
-        # Match suffix AND type (router, switch, etc.)
-        if hostname_suffix == label_suffix and device_type.lower() == label_type:
+        if hostname_suffix == label_suffix:
             db_cursor.execute(
                 "UPDATE device SET node_id = %s WHERE device_id = %s",
                 (node_id, device_id)
@@ -370,8 +359,13 @@ def get_vendor_handler(platform):
 
 
 def get_suffix(value):
-    match = re.search(r"(\d+)$", value)
-    return match.group(1) if match else None
+    value = value.lower().strip()
+
+    # Only extract suffix if the label starts with a known prefix
+    if re.match(r"^(r|router|sw|switch)", value):
+        match = re.search(r"(\d+)$", value)
+        return match.group(1) if match else None
+    return None
 
 
 def config(template_name, context: dict):
