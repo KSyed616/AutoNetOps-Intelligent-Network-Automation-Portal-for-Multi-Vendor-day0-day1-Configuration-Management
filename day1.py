@@ -1,10 +1,11 @@
 import os
 
 import mysql.connector
+import xmltodict
 from ncclient import manager
 
 
-def day1_hello(device_id: int):
+def db_derivation(device_id: int):
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "127.0.0.1"),
         port=int(os.getenv("DB_PORT", 3306)),
@@ -23,6 +24,12 @@ def day1_hello(device_id: int):
         "password": row[6]
     }
 
+    return device
+
+
+def day1_hello(device_id: int):
+    device = db_derivation(device_id)
+
     with manager.connect(host=device["host"],
                          port=device["port"],
                          username=device["username"],
@@ -35,3 +42,18 @@ def day1_hello(device_id: int):
         for capability in m.server_capabilities:
             print(capability)
 
+
+def get_interfaces(device_id: int):
+    device = db_derivation(device_id)
+    filter_xml = """
+    <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"/>
+    """
+    with manager.connect(host=device["host"],
+                         port=device["port"],
+                         username=device["username"],
+                         password=device["password"],
+                         hostkey_verify=False) as m:
+        response = m.get(filter=("subtree", filter_xml))
+        data = xmltodict.parse(response.xml)
+        interfaces = data['rpc-reply']['data']['interfaces-state']['interface']
+        return interfaces

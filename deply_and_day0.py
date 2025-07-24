@@ -365,7 +365,6 @@ def get_vendor_handler(platform):
 def get_suffix(value):
     value = value.lower().strip()
 
-    # Only extract suffix if the label starts with a known prefix
     if re.match(r"^(r|router|sw|switch)", value):
         match = re.search(r"(\d+)$", value)
         return match.group(1) if match else None

@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello
+from day1 import day1_hello, get_interfaces
 from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
@@ -58,6 +58,11 @@ def select_day0_devices(request: Request):
 def select_day1_devices(request: Request):
     devices = get_day0()
     return templates.TemplateResponse("day1_devices.html", {"request": request, "devices": devices})
+
+
+@app.get("/interface/config", response_class=HTMLResponse)
+def display_int_info(request: Request):
+    return templates.TemplateResponse("interface_config.html", {"request": request})
 
 
 @app.get("/devices/deploy_edit/{device_id}", response_class=HTMLResponse)
@@ -129,10 +134,14 @@ def day0_single_device(device_id: int = Form(...)):
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
-@app.post("/day1_hello")
-def day1(device_id: int = Form(...)):
+@app.post("/day1/interfaces/{device_id}", response_class=HTMLResponse)
+def day1_interfaces(request: Request, device_id: int = Form(...)):
     day1_hello(device_id)
-    return RedirectResponse(url="/day1_menu", status_code=303)
+    interface_data=get_interfaces(device_id)
+    return templates.TemplateResponse(
+        "interface_config.html",
+        {"request": request, "interfaces": interface_data}
+    )
 
 
 if __name__ == "__main__":

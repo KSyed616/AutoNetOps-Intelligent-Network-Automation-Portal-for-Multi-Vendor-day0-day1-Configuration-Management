@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Day 1 Interface Configuration</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <h2>Unconfigured Interfaces</h2>
+    <ul>
+      {% for intf in interfaces %}
+        <li>
+          <strong>{{ intf.name }}</strong> -
+          {% if intf.enabled %} Enabled {% else %} Disabled {% endif %}
+          {% if intf.description %} ({{ intf.description }}) {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+</body>
+</html>
