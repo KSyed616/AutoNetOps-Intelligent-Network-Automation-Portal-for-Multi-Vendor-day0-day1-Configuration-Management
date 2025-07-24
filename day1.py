@@ -45,15 +45,35 @@ def day1_hello(device_id: int):
 
 def get_interfaces(device_id: int):
     device = db_derivation(device_id)
+
     filter_xml = """
     <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"/>
     """
-    with manager.connect(host=device["host"],
-                         port=device["port"],
-                         username=device["username"],
-                         password=device["password"],
-                         hostkey_verify=False) as m:
+
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
+    ) as m:
         response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
+
         interfaces = data['rpc-reply']['data']['interfaces-state']['interface']
-        return interfaces
+
+        unconfigured = []
+        for intf in interfaces:
+            name = intf.get("name")
+            oper_status = intf.get("oper-status", "down")
+            intf.get("phys-address", None)
+            intf.get("speed", None)
+
+            if oper_status == "down":
+                unconfigured.append({
+                    "name": name,
+                    "status": "Disabled"
+                })
+
+    return unconfigured
+
