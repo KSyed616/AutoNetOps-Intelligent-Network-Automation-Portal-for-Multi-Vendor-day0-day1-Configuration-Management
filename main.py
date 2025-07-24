@@ -24,7 +24,7 @@ def login_page(request: Request):
 def login(username: str = Form(...), password: str = Form(...)):
     user = Login(username=username,
                  pwd=password)
-    token = cml_login(user)
+    token = cml_login()
     return RedirectResponse(url="/dashboard", status_code=303)
 
 

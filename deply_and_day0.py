@@ -13,7 +13,7 @@ from vendor.ciscoHandler import CiscoHandler
 from vendor.juniperHandler import JuniperHandler
 
 
-def cml_login(info: Login):
+def cml_login():
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "127.0.0.1"),
         port=int(os.getenv("DB_PORT", 3306)),
@@ -23,8 +23,8 @@ def cml_login(info: Login):
     )
 
     CML_URL = "https://cml-36.compnet.ryerson.ca"
-    user = info.username
-    password = info.pwd
+    user = "admin"
+    password = "CompNet1234"
 
     url = CML_URL + "/api/v0/authenticate"
 
@@ -36,6 +36,8 @@ def cml_login(info: Login):
         },
         verify=False
     )
+    print("resp ", response.status_code)
+    print("CML: ", CML_URL)
 
     if response.status_code == 200:
         token = response.text.strip('"')
@@ -59,6 +61,7 @@ def cml_login(info: Login):
 
         db_cursor.execute(sql, (CML_URL,))
         row = db_cursor.fetchone()
+        print("this is row:", row)
 
         if not row:
             sql = """
@@ -90,6 +93,7 @@ def cml_login(info: Login):
         return token
     else:
         print(response.text)
+        return None
 
 
 def get_deployed():
