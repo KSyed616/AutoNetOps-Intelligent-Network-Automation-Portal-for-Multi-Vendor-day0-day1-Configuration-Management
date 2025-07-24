@@ -134,7 +134,7 @@ def day0_single_device(device_id: int = Form(...)):
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
-@app.post("/day1/interfaces/{device_id}", response_class=HTMLResponse)
+@app.post("/day1/interfaces", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Form(...)):
     day1_hello(device_id)
     interface_data=get_interfaces(device_id)
