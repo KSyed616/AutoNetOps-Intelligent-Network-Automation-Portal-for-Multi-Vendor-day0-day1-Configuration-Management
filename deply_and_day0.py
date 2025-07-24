@@ -331,11 +331,23 @@ def identify_node(headers, cml_url, lab_id, node_id):
     label = node_info["label"].strip().lower()
     label_suffix = get_suffix(label)
 
-    db_cursor.execute("SELECT device_id, hostname FROM device")
-    for device_id, hostname in db_cursor.fetchall():
+    # Determine node type from label (e.g. routers-0 → router, sw1 → switch)
+    if label.startswith("router"):
+        label_type = "router"
+    elif label.startswith("sw"):
+        label_type = "switch"
+    elif label.startswith("ext-conn"):
+        label_type = "ext-conn"
+    else:
+        label_type = ""
+
+    db_cursor.execute("SELECT device_id, hostname, device_type FROM device")
+    for device_id, hostname, device_type in db_cursor.fetchall():
         hostname_suffix = get_suffix(hostname.strip().lower())
 
-        if hostname_suffix == label_suffix:
+        # Match suffix AND type (router, switch, etc.)
+        if hostname_suffix == label_suffix and device_type.lower() == label_type:
+            print(f"✅ Matched: {hostname} ↔ {label}")
             db_cursor.execute(
                 "UPDATE device SET node_id = %s WHERE device_id = %s",
                 (node_id, device_id)
