@@ -133,9 +133,13 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
     </config>
     """
 
+    print(template_str)
     # Save template to file
-    os.makedirs("templates/generated", exist_ok=True)
-    with open("templates/interface_template.j2", "w") as f:
+    output_dir = "configurations/generated"
+    os.makedirs(output_dir, exist_ok=True)
+    print("saving temp:", os.path.join(output_dir, "interface_temp.j2"))
+    print("CWD", os.getcwd())
+    with open(os.path.join(output_dir, "interface_temp.j2"), "w") as f:
         f.write(template_str)
 
 
