@@ -29,6 +29,7 @@ services:
       DB_NAME: AutoNetOps
     volumes:
       - ./configurations:/app/configurations
+      - ./models:/app/models
 
 volumes:
   mysql_data:
