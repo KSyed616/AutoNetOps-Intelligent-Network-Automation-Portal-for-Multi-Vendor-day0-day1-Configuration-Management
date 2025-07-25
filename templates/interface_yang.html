@@ -1,30 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Day 1 Interface Configuration</title>
-    <link rel="stylesheet" href="/static/style.css" />
+  <meta charset="UTF-8" />
+  <title>Configure Interface</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>Configure Interface: {{ interface_name }}</h2>
-        <form method="post" action="/day1/interfaces/submit">
-          <input type="hidden" name="interface_name" value="{{ interface_name }}">
+  <div class="container">
+    <h2>Configure Interface: {{ interface_name }}</h2>
 
-          {% if 'enabled' in fields %}
-            <label>Enabled:</label><input type="checkbox" name="enabled"><br>
-          {% endif %}
+    <form method="POST" action="/day1/interfaces/config">
+      <!-- Hidden field for interface name -->
+      <input type="hidden" name="interface_name" value="{{ interface_name }}">
 
-          {% if 'ipv4_address' in fields %}
-            <label>IPv4 Address:</label><input type="text" name="ipv4_address"><br>
-          {% endif %}
+      {% for field in fields %}
+        {% if field == "description" %}
+          <label>Description:</label>
+          <input type="text" name="description"><br>
 
-          {% if 'netmask' in fields %}
-            <label>Netmask:</label><input type="text" name="netmask"><br>
-          {% endif %}
+        {% elif field == "enabled" %}
+          <label>Enabled:</label>
+          <input type="checkbox" name="enabled"><br>
 
-          <button type="submit">Submit Configuration</button>
-        </form>
-    </div>
+        {% elif field == "link-up-down-trap-enable" %}
+          <label>Link Up/Down Trap Enable:</label>
+          <input type="checkbox" name="link-up-down-trap-enable"><br>
+
+        {% elif field == "ipv4-address-ip" %}
+          <label>IPv4 Address:</label>
+          <input type="text" name="ipv4_address"><br>
+
+        {% elif field == "prefix-length" %}
+          <label>Prefix Length:</label>
+          <input type="number" name="prefix_length" min="1" max="32"><br>
+
+        {% elif field == "netmask" %}
+          <label>Netmask:</label>
+          <input type="text" name="netmask"><br>
+
+        {% elif field == "ipv4-enabled" %}
+          <label>IPv4 Enabled:</label>
+          <input type="checkbox" name="ipv4_enabled"><br>
+
+        {% elif field == "ipv4-forwarding" %}
+          <label>IPv4 Forwarding:</label>
+          <input type="checkbox" name="ipv4_forwarding"><br>
+
+        {% elif field == "ipv4-mtu" %}
+          <label>MTU:</label>
+          <input type="number" name="ipv4_mtu"><br>
+
+        {% elif field == "ipv4-neighbor-ip" %}
+          <label>Static Neighbor IP:</label>
+          <input type="text" name="ipv4_neighbor_ip"><br>
+
+        {% elif field == "ipv4-neighbor-mac" %}
+          <label>Neighbor MAC:</label>
+          <input type="text" name="ipv4_neighbor_mac"><br>
+        {% endif %}
+      {% endfor %}
+
+      <button type="submit">Submit Configuration</button>
+    </form>
+  </div>
 </body>
 </html>

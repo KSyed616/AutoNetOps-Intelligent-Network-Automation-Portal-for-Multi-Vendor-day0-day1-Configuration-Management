@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables
+from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate
 from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
@@ -173,8 +173,8 @@ def interface_template(request: Request,
     return RedirectResponse("/dashboard", status_code=303)
 
 
-@app.post("/day1/interfaces/config", response_class=HTMLResponse)
-async def configure_interface(request: Request, interface_name: str = Form(...)):
+@app.get("/day1/interfaces/template", response_class=HTMLResponse)
+def get_int_config(request: Request, interface_name: str = Form(...)):
 
     print(f"Interface selected for config: {interface_name}")
     fields = get_template_variables("interface_temp.j2")
@@ -184,6 +184,53 @@ async def configure_interface(request: Request, interface_name: str = Form(...))
         "interface_name": interface_name,
         "fields": fields
     })
+
+
+@app.post("/day1/interfaces/config", response_class=HTMLResponse)
+async def config_int(request: Request):
+    form = await request.form()
+
+    context = {
+        "name": form["interface_name"],
+        "enabled": "true" if "enabled" in form else "false"
+    }
+
+    if "description" in form:
+        context["description"] = form["description"]
+
+    if "link-up-down-trap-enable" in form:
+        context["link_up_down_trap_enable"] = "true"
+
+    if "ipv4_address" in form:
+        context["ipv4_address"] = form["ipv4_address"]
+
+    if "prefix_length" in form:
+        context["prefix_length"] = form["prefix_length"]
+
+    if "netmask" in form:
+        context["netmask"] = form["netmask"]
+
+    if "ipv4_enabled" in form:
+        context["ipv4_enabled"] = "true"
+
+    if "ipv4_forwarding" in form:
+        context["ipv4_forwarding"] = "true"
+
+    if "ipv4_mtu" in form:
+        context["ipv4_mtu"] = form["ipv4_mtu"]
+
+    if "ipv4_neighbor_ip" in form:
+        context["ipv4_neighbor_ip"] = form["ipv4_neighbor_ip"]
+
+    if "ipv4_neighbor_mac" in form:
+        context["ipv4_neighbor_mac"] = form["ipv4_neighbor_mac"]
+
+    context.setdefault("ipv4_enabled", "false")
+    context.setdefault("ipv4_forwarding", "false")
+
+    print("context", context)
+
+    validate("interface_template.j2", context, "app/models", "ietf-interfaces.yang")
 
 
 if __name__ == "__main__":

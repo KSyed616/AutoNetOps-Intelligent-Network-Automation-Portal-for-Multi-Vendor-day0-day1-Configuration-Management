@@ -1,4 +1,6 @@
 import os
+import subprocess
+import tempfile
 from typing import List
 
 import mysql.connector
@@ -146,5 +148,39 @@ def get_template_variables(template_path: str):
     template_source = env.loader.get_source(env, template_path)[0]
     parsed_content = env.parse(template_source)
     return meta.find_undeclared_variables(parsed_content)
+
+
+def validate(template_name, context, yang_model_dir: str, module_file: str):
+    env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
+    template = env.get_template(template_name)
+    xml_string = template.render(context)
+
+    with tempfile.NamedTemporaryFile(mode='w+', suffix=".xml", delete=False) as tmp:
+        tmp.write(xml_string)
+        tmp_path = tmp.name
+
+    try:
+        result = subprocess.run(
+            [
+                "pyang",
+                "-p", yang_model_dir,
+                "-f", "sample-xml-skeleton",
+                os.path.join(yang_model_dir, module_file),
+                "--sample-xml-skeleton-doctype=config",
+                "--sample-xml-skeleton-path", tmp_path
+            ],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode == 0:
+            print("XML is valid against YANG model.")
+            return True
+        else:
+            print("Validation failed:\n", result.stderr)
+            return False
+
+    finally:
+        os.remove(tmp_path)
 
 

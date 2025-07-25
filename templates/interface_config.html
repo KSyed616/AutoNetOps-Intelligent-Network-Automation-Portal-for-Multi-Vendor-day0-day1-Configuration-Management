@@ -9,7 +9,7 @@
     <div class="container">
         <h2>Unconfigured Interfaces</h2>
           {% for intf in interfaces %}
-            <form action="/day1/interfaces/config" method="post">
+            <form action="/day1/interfaces/template" method="get">
               <input type="hidden" name="interface_name" value="{{ intf.name }}">
               <button type="submit">{{ intf.name }} - {{ intf.status }}</button>
             </form>
