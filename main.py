@@ -20,6 +20,14 @@ def login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@app.post("/login")
+def login(username: str = Form(...), password: str = Form(...)):
+    user = Login(username=username,
+                 pwd=password)
+    token = cml_login()
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
@@ -52,6 +60,11 @@ def select_day1_devices(request: Request):
     return templates.TemplateResponse("day1_devices.html", {"request": request, "devices": devices})
 
 
+@app.get("/template_menu", response_class=HTMLResponse)
+def template_menu(request: Request):
+    return templates.TemplateResponse("day1_devices.html", {"request": request})
+
+
 @app.get("/interface/config", response_class=HTMLResponse)
 def display_int_info(request: Request):
     return templates.TemplateResponse("interface_config.html", {"request": request})
@@ -66,19 +79,6 @@ def edit_device_page(device_id: int, request: Request):
             "device_id": device_id
         }
     )
-
-
-@app.get("/template_menu", response_class=HTMLResponse)
-def template_menu(request: Request):
-    return templates.TemplateResponse("template_menu.html", {"request": request})
-
-
-@app.post("/login")
-def login(username: str = Form(...), password: str = Form(...)):
-    user = Login(username=username,
-                 pwd=password)
-    token = cml_login()
-    return RedirectResponse(url="/dashboard", status_code=303)
 
 
 @app.post("/devices/deploy")
