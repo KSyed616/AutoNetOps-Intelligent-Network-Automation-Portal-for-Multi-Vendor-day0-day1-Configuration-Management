@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Interface Template Creation</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="container">
+        <form method="POST" action="/generate-interface-template">
+          <h3>Interface Configuration Fields (Select optional fields)</h3>
+
+          <label>
+            <input type="checkbox" name="fields" value="name" checked disabled>
+            Interface Name (mandatory)
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="type" checked disabled>
+            Interface Type (mandatory)
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="description">
+            Description
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="enabled">
+            Enabled
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="link-up-down-trap-enable">
+            Link Up/Down Trap Enable
+          </label><br><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-address-ip" checked disabled>
+            IPv4 Address (mandatory)
+          </label><br>
+
+          <label>
+            <input type="radio" name="ipv4-prefix-option" value="prefix-length" checked>
+            Prefix Length (e.g. /24)
+          </label><br>
+
+          <label>
+            <input type="radio" name="ipv4-prefix-option" value="netmask">
+            Subnet Mask (e.g. 255.255.255.0)
+          </label><br><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-enabled">
+            IPv4 Enabled
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-forwarding">
+            IPv4 Forwarding
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-mtu">
+            MTU
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-neighbor-ip">
+            Static Neighbor IP
+          </label><br>
+
+          <label>
+            <input type="checkbox" name="fields" value="ipv4-neighbor-mac">
+            Neighbor MAC (Link-Layer Address)
+          </label><br><br>
+
+          <button type="submit">Generate Template</button>
+        </form>
+
+    </div>
+</body>
+</html>

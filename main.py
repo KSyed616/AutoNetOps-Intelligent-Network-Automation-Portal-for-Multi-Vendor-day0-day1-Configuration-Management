@@ -20,14 +20,6 @@ def login_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.post("/login")
-def login(username: str = Form(...), password: str = Form(...)):
-    user = Login(username=username,
-                 pwd=password)
-    token = cml_login()
-    return RedirectResponse(url="/dashboard", status_code=303)
-
-
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
@@ -74,6 +66,19 @@ def edit_device_page(device_id: int, request: Request):
             "device_id": device_id
         }
     )
+
+
+@app.get("/template_menu", response_class=HTMLResponse)
+def template_menu(request: Request):
+    return templates.TemplateResponse("template_menu.html", {"request": request})
+
+
+@app.post("/login")
+def login(username: str = Form(...), password: str = Form(...)):
+    user = Login(username=username,
+                 pwd=password)
+    token = cml_login()
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 
 @app.post("/devices/deploy")
@@ -137,11 +142,23 @@ def day0_single_device(device_id: int = Form(...)):
 @app.post("/day1/interfaces", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Form(...)):
     day1_hello(device_id)
-    interface_data=get_interfaces(device_id)
+    interface_data = get_interfaces(device_id)
     return templates.TemplateResponse(
         "interface_config.html",
         {"request": request, "interfaces": interface_data}
     )
+
+
+@app.post("/template")
+def template(request: Request, temp_type: str = Form(...)):
+    if temp_type == "interface":
+        return templates.TemplateResponse("interface_temp.html", {"request": request})
+    elif temp_type == "rip":
+        return templates.TemplateResponse("rip_config.html", {"request": request})
+    elif temp_type == "ospf":
+        return templates.TemplateResponse("ospf_config.html", {"request": request})
+    else:
+        return RedirectResponse("/dashboard")
 
 
 if __name__ == "__main__":
