@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Day 1 Interface Configuration</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>Configure Interface: {{ interface_name }}</h2>
+        <form method="post" action="/day1/interfaces/submit">
+          <input type="hidden" name="interface_name" value="{{ interface_name }}">
+
+          {% if 'enabled' in fields %}
+            <label>Enabled:</label><input type="checkbox" name="enabled"><br>
+          {% endif %}
+
+          {% if 'ipv4_address' in fields %}
+            <label>IPv4 Address:</label><input type="text" name="ipv4_address"><br>
+          {% endif %}
+
+          {% if 'netmask' in fields %}
+            <label>Netmask:</label><input type="text" name="netmask"><br>
+          {% endif %}
+
+          <button type="submit">Submit Configuration</button>
+        </form>
+    </div>
+</body>
+</html>

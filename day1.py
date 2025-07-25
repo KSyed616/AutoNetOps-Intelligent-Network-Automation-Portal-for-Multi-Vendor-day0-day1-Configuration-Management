@@ -3,6 +3,7 @@ from typing import List
 
 import mysql.connector
 import xmltodict
+from jinja2 import Environment, FileSystemLoader, meta
 from ncclient import manager
 
 
@@ -136,3 +137,10 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
     os.makedirs("templates/generated", exist_ok=True)
     with open("templates/interface_template.j2", "w") as f:
         f.write(template_str)
+
+
+def get_template_variables(template_path: str):
+    env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
+    template_source = env.loader.get_source(env, template_path)[0]
+    parsed_content = env.parse(template_source)
+    return meta.find_undeclared_variables(parsed_content)

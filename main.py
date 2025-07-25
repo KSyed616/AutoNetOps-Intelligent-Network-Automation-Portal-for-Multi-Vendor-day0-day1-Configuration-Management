@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp
+from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables
 from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
@@ -171,6 +171,19 @@ def interface_template(request: Request,
     gen_int_temp(fields, ipv4_prefix_option)
 
     return RedirectResponse("/dashboard", status_code=303)
+
+
+@app.post("/day1/interfaces/config", response_class=HTMLResponse)
+async def configure_interface(request: Request, interface_name: str = Form(...)):
+
+    print(f"Interface selected for config: {interface_name}")
+    fields = get_template_variables("interface_temp.j2")
+
+    return templates.TemplateResponse("interface_yang.html", {
+        "request": request,
+        "interface_name": interface_name,
+        "fields": fields
+    })
 
 
 if __name__ == "__main__":
