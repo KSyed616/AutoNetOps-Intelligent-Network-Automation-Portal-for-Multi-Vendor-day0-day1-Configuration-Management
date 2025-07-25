@@ -337,9 +337,7 @@ def identify_node(headers, cml_url, lab_id, node_id):
 
     db_cursor.execute("SELECT device_id, hostname FROM device")
     for device_id, hostname in db_cursor.fetchall():
-        hostname_suffix = get_suffix(hostname.strip().lower())
-
-        if hostname_suffix == label_suffix:
+        if hostname.strip().lower() == label.strip().lower():
             db_cursor.execute(
                 "UPDATE device SET node_id = %s WHERE device_id = %s",
                 (node_id, device_id)
