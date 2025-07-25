@@ -62,7 +62,7 @@ def select_day1_devices(request: Request):
 
 @app.get("/template_menu", response_class=HTMLResponse)
 def template_menu(request: Request):
-    return templates.TemplateResponse("day1_devices.html", {"request": request})
+    return templates.TemplateResponse("template_menu.html", {"request": request})
 
 
 @app.get("/interface/config", response_class=HTMLResponse)
