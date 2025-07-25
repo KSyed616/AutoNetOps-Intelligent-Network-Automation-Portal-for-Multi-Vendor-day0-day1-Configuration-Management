@@ -28,9 +28,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: AutoNetOps
     volumes:
-      - ./templates:/app/templates
-      - ./static:/app/static
-
+      - ./configurations:/app/configurations
 
 volumes:
   mysql_data:
