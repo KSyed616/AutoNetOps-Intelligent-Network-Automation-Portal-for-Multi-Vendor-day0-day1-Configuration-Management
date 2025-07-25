@@ -150,10 +150,15 @@ def get_template_variables(template_path: str):
     return meta.find_undeclared_variables(parsed_content)
 
 
-def validate(template_name, context, yang_model_dir: str, module_file: str):
+def create_temp(template_name, context):
     env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
     template = env.get_template(template_name)
     xml_string = template.render(context)
+    return xml_string
+
+
+def validate(template_name, context, yang_model_dir: str, module_file: str):
+    xml_string = create_temp(template_name, context)
 
     with tempfile.NamedTemporaryFile(mode='w+', suffix=".xml", delete=False) as tmp:
         tmp.write(xml_string)
@@ -183,4 +188,21 @@ def validate(template_name, context, yang_model_dir: str, module_file: str):
     finally:
         os.remove(tmp_path)
 
+
+def push_int(xml_string, device_id):
+    device = db_derivation(device_id)
+
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
+    ) as m:
+        response = m.edit_config(
+            target="running",
+            config=xml_string
+        )
+        print("NETCONF Response:\n", response)
+        return response
 

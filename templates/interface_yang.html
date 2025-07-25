@@ -12,6 +12,7 @@
     <form method="POST" action="/day1/interfaces/config">
       <!-- Hidden field for interface name -->
       <input type="hidden" name="interface_name" value="{{ interface_name }}">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
 
       {% for field in fields %}
         {% if field == "description" %}
