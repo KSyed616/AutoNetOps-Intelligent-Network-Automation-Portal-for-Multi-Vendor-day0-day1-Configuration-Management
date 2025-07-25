@@ -290,6 +290,20 @@ def day0_single(device_id: int):
         raise HTTPException(status_code=404, detail="Device not found")
 
     node_id = row[8]
+
+    requests.put(
+        f"{cml_url}/api/v0/labs/{lab_id}/nodes/{node_id}/state/stop",
+        headers=headers,
+        verify=False
+    )
+    time.sleep(2)
+
+    requests.put(
+        f"{cml_url}/api/v0/labs/{lab_id}/nodes/{node_id}/wipe",
+        headers=headers,
+        verify=False
+    )
+
     if not node_id:
         raise HTTPException(status_code=400, detail="Node ID not set for this device.")
 
@@ -333,7 +347,6 @@ def identify_node(headers, cml_url, lab_id, node_id):
     node_info = response.json()
 
     label = node_info["label"].strip().lower()
-    label_suffix = get_suffix(label)
 
     db_cursor.execute("SELECT device_id, hostname FROM device")
     for device_id, hostname in db_cursor.fetchall():
