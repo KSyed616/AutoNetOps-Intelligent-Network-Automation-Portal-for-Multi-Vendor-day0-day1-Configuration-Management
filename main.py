@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -174,7 +174,7 @@ def interface_template(request: Request,
 
 
 @app.get("/day1/interfaces/template", response_class=HTMLResponse)
-def get_int_config(request: Request, interface_name: str = Form(...)):
+def get_int_config(request: Request, interface_name: str = Query(...)):
 
     print(f"Interface selected for config: {interface_name}")
     fields = get_template_variables("interface_temp.j2")
@@ -230,7 +230,7 @@ async def config_int(request: Request):
 
     print("context", context)
 
-    validate("interface_template.j2", context, "app/models", "ietf-interfaces.yang")
+    validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang")
 
 
 if __name__ == "__main__":
