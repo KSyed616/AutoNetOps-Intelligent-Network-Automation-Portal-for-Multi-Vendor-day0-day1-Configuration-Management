@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate
+from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp
 from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
@@ -174,7 +174,7 @@ def interface_template(request: Request,
 
 
 @app.get("/day1/interfaces/template", response_class=HTMLResponse)
-def get_int_config(request: Request, interface_name: str = Query(...)):
+def get_int_config(request: Request, interface_name: str = Query(...), device_id: str = Query(...)):
 
     print(f"Interface selected for config: {interface_name}")
     fields = get_template_variables("interface_temp.j2")
@@ -182,7 +182,8 @@ def get_int_config(request: Request, interface_name: str = Query(...)):
     return templates.TemplateResponse("interface_yang.html", {
         "request": request,
         "interface_name": interface_name,
-        "fields": fields
+        "fields": fields,
+        "device_id": device_id
     })
 
 
@@ -229,9 +230,13 @@ async def config_int(request: Request):
     context.setdefault("ipv4_forwarding", "false")
 
     print("context", context)
+    device_id = int(form["device_id"])
+    validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang")
 
-    validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang")
-
+    if validate_resp:
+        config_temp = create_temp("interface_temp.j2", context)
+        print(config_temp)
+        push_int(config_temp, device_id)
 
 if __name__ == "__main__":
     import uvicorn

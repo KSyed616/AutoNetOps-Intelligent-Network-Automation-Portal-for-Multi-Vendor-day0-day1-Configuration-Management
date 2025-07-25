@@ -43,8 +43,6 @@ def day1_hello(device_id: int):
                          allow_agent=False,
                          look_for_keys=False) as m:
         print("Supported YANG modules via NETCONF capabilities:\n")
-        for capability in m.server_capabilities:
-            print(capability)
 
 
 def get_interfaces(device_id: int):
@@ -191,6 +189,7 @@ def validate(template_name, context, yang_model_dir: str, module_file: str):
 
 def push_int(xml_string, device_id):
     device = db_derivation(device_id)
+    print("device ", device)
 
     with manager.connect(
             host=device["host"],
