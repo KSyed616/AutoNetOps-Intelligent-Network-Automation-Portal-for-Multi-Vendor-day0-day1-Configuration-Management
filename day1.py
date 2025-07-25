@@ -134,11 +134,9 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
     """
 
     print(template_str)
-    # Save template to file
     output_dir = "configurations/generated"
     os.makedirs(output_dir, exist_ok=True)
-    print("saving temp:", os.path.join(output_dir, "interface_temp.j2"))
-    print("CWD", os.getcwd())
+
     with open(os.path.join(output_dir, "interface_temp.j2"), "w") as f:
         f.write(template_str)
 
@@ -148,3 +146,5 @@ def get_template_variables(template_path: str):
     template_source = env.loader.get_source(env, template_path)[0]
     parsed_content = env.parse(template_source)
     return meta.find_undeclared_variables(parsed_content)
+
+
