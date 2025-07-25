@@ -1,10 +1,12 @@
+from typing import List
+
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces
+from day1 import day1_hello, get_interfaces, gen_int_temp
 from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
 from schema import Device, Login
 
@@ -159,6 +161,16 @@ def template(request: Request, temp_type: str = Form(...)):
         return templates.TemplateResponse("ospf_config.html", {"request": request})
     else:
         return RedirectResponse("/dashboard")
+
+
+@app.post("/template/interface")
+def interface_template(request: Request,
+                       fields: List[str] = Form(...),
+                       ipv4_prefix_option: str = Form(...)):
+
+    gen_int_temp(fields, ipv4_prefix_option)
+
+    return RedirectResponse("/dashboard", status_code=303)
 
 
 if __name__ == "__main__":

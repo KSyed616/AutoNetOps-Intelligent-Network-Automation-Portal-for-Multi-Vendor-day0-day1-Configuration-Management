@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import mysql.connector
 import xmltodict
@@ -77,3 +78,61 @@ def get_interfaces(device_id: int):
 
     return unconfigured
 
+
+def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
+    template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>{{ name }}</name>
+          <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+    """
+
+    # Append selected fields
+    if "description" in fields:
+        template_str += "      <description>{{ description }}</description>\n"
+
+    if "enabled" in fields:
+        template_str += "      <enabled>{{ enabled }}</enabled>\n"
+
+    if "link-up-down-trap-enable" in fields:
+        template_str += "      <link-up-down-trap-enable>{{ link_up_down_trap_enable }}</link-up-down-trap-enable>\n"
+
+    # IPv4 Section
+    template_str += """      <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+            <address>
+              <ip>{{ ipv4_address }}</ip>
+    """
+    if ipv4_prefix_option == "prefix-length":
+        template_str += "          <prefix-length>{{ prefix_length }}</prefix-length>\n"
+    else:
+        template_str += "          <netmask>{{ netmask }}</netmask>\n"
+
+    template_str += "        </address>\n"
+
+    if "ipv4-enabled" in fields:
+        template_str += "        <enabled>{{ ipv4_enabled }}</enabled>\n"
+    if "ipv4-forwarding" in fields:
+        template_str += "        <forwarding>{{ ipv4_forwarding }}</forwarding>\n"
+    if "ipv4-mtu" in fields:
+        template_str += "        <mtu>{{ ipv4_mtu }}</mtu>\n"
+    if "ipv4-neighbor-ip" in fields:
+        template_str += """        <neighbor>
+              <ip>{{ ipv4_neighbor_ip }}</ip>\n"""
+        if "ipv4-neighbor-mac" in fields:
+            template_str += "          <link-layer-address>{{ ipv4_neighbor_mac }}</link-layer-address>\n"
+        template_str += "        </neighbor>\n"
+    elif "ipv4-neighbor-mac" in fields:
+        template_str += """        <neighbor>
+              <link-layer-address>{{ ipv4_neighbor_mac }}</link-layer-address>
+            </neighbor>\n"""
+
+    template_str += """      </ipv4>
+        </interface>
+      </interfaces>
+    </config>
+    """
+
+    # Save template to file
+    os.makedirs("templates/generated", exist_ok=True)
+    with open("templates/interface_template.j2", "w") as f:
+        f.write(template_str)
