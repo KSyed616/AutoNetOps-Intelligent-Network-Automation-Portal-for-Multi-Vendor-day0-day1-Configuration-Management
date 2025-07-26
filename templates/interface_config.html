@@ -11,6 +11,7 @@
     {% for intf in interfaces %}
         <form action="/day1/interfaces/template" method="get">
             <input type="hidden" name="interface_name" value="{{ intf.name }}">
+            <input type="hidden" name="interface_status" value="{{ intf.status }}">
             <input type="hidden" name="device_id" value="{{ device_id }}">
             <button type="submit">
                 {{ intf.name }} - {{ intf.status }}

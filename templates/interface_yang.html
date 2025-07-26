@@ -13,6 +13,7 @@
       <!-- Hidden field for interface name -->
       <input type="hidden" name="interface_name" value="{{ interface_name }}">
       <input type="hidden" name="device_id" value="{{ device_id }}">
+      <input type="hidden" name="interface_status" value="{{ interface_status }}">
 
       {% for field in fields %}
         {% if field == "description" %}

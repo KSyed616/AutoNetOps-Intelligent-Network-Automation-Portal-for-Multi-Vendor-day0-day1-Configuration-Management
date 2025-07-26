@@ -170,7 +170,7 @@ def interface_template(fields: List[str] = Form(...),
 
 
 @app.get("/day1/interfaces/template", response_class=HTMLResponse)
-def get_int_config(request: Request, interface_name: str = Query(...), device_id: str = Query(...)):
+def get_int_config(request: Request, interface_name: str = Query(...), interface_status: str = Query(...), device_id: str = Query(...)):
 
     print(f"Interface selected for config: {interface_name}")
     fields = get_template_variables("interface_temp.j2")
@@ -178,6 +178,7 @@ def get_int_config(request: Request, interface_name: str = Query(...), device_id
     return templates.TemplateResponse("interface_yang.html", {
         "request": request,
         "interface_name": interface_name,
+        "interface_status": interface_status,
         "fields": fields,
         "device_id": device_id
     })
@@ -221,10 +222,16 @@ async def config_int(request: Request):
 
     print("context", context)
     device_id = int(form["device_id"])
+    interface_status = str(form["interface_status"])
     validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang")
 
     if validate_resp:
-        config_temp = create_temp("interface_temp.j2", context)
+        config_temp = create_temp(
+            "interface_temp.j2",
+            context,
+            is_reconfig=True if interface_status == "configurable" else False
+        )
+
         print(config_temp)
         push_int(config_temp, device_id)
 

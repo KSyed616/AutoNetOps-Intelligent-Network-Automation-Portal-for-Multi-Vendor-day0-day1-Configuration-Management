@@ -88,7 +88,10 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
       <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
         <interface>
           <name>{{ name }}</name>
+        {% if not is_reconfig %}
           <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+        {% endif %}
+
     """
 
     # Append selected fields
@@ -96,7 +99,9 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
         template_str += "      <description>{{ description }}</description>\n"
 
     if "enabled" in fields:
-        template_str += "      <enabled>{{ enabled }}</enabled>\n"
+        template_str += (
+            "        {% if not is_reconfig %}<enabled>{{ enabled }}</enabled>{% endif %}\n"
+        )
 
     if "link-up-down-trap-enable" in fields:
         template_str += "      <link-up-down-trap-enable>{{ link_up_down_trap_enable }}</link-up-down-trap-enable>\n"
@@ -151,9 +156,12 @@ def get_template_variables(template_path: str):
     return meta.find_undeclared_variables(parsed_content)
 
 
-def create_temp(template_name, context):
+def create_temp(template_name, context, is_reconfig):
     env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
     template = env.get_template(template_name)
+
+    context["is_reconfig"] = is_reconfig
+
     xml_string = template.render(context)
     return xml_string
 
