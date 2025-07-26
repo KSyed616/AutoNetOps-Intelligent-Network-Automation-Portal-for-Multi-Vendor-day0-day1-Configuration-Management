@@ -228,6 +228,8 @@ async def config_int(request: Request):
         print(config_temp)
         push_int(config_temp, device_id)
 
+    return RedirectResponse("/dashboard", status_code=303)
+
 if __name__ == "__main__":
     import uvicorn
 
