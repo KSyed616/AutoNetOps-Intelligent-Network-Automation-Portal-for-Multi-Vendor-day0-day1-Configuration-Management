@@ -64,20 +64,23 @@ def get_interfaces(device_id: int):
 
         interfaces = data['rpc-reply']['data']['interfaces-state']['interface']
 
-        unconfigured = []
+        all_interfaces = []
+
         for intf in interfaces:
             name = intf.get("name")
+            if name == "GigabitEthernet1":
+                continue
+
             oper_status = intf.get("oper-status", "down")
-            intf.get("phys-address", None)
-            intf.get("speed", None)
 
-            if oper_status == "down":
-                unconfigured.append({
-                    "name": name,
-                    "status": "Disabled"
-                })
+            status = "Enabled" if oper_status == "up" else "Disabled"
 
-    return unconfigured
+            all_interfaces.append({
+                "name": name,
+                "status": status
+            })
+
+        return all_interfaces
 
 
 def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
