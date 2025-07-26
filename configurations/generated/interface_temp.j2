@@ -2,12 +2,11 @@
       <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
         <interface>
           <name>{{ name }}</name>
-        {% if not is_reconfig %}
           <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
-        {% endif %}
+
 
           <description>{{ description }}</description>
-        {% if not is_reconfig %}<enabled>{{ enabled }}</enabled>{% endif %}
+        <enabled>{{ enabled }}</enabled>
       <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
             <address>
               <ip>{{ ipv4_address }}</ip>
