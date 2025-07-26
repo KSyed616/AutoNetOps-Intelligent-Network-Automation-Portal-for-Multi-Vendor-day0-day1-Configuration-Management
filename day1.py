@@ -222,11 +222,7 @@ def push_int(xml_string, device_id):
 def get_interface_ip(mgr, interface_name):
     filter_xml = f"""
     <filter>
-      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-        <interface>
-          <name>{interface_name}</name>
-        </interface>
-      </interfaces>
+        <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"/>
     </filter>
     """
 
@@ -235,7 +231,6 @@ def get_interface_ip(mgr, interface_name):
     result = mgr.get_config(source='running', filter=("subtree", filter_xml))
     data = xmltodict.parse(result.xml)
     print("dd", data)
-
 
     try:
         ip_info = data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
