@@ -7,8 +7,8 @@ from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp
-from deply_and_day0 import get_deployed, deploy, edit_onboard, cml_login, day0, day0_single, get_day0
-from schema import Device, Login
+from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0
+from schema import Device
 
 app = FastAPI()
 
@@ -23,10 +23,7 @@ def login_page(request: Request):
 
 
 @app.post("/login")
-def login(username: str = Form(...), password: str = Form(...)):
-    user = Login(username=username,
-                 pwd=password)
-    token = cml_login()
+def login():
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
@@ -164,8 +161,7 @@ def template(request: Request, temp_type: str = Form(...)):
 
 
 @app.post("/template/interface")
-def interface_template(request: Request,
-                       fields: List[str] = Form(...),
+def interface_template(fields: List[str] = Form(...),
                        ipv4_prefix_option: str = Form(...)):
 
     gen_int_temp(fields, ipv4_prefix_option)

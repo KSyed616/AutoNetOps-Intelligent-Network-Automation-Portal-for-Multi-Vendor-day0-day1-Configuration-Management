@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Day 1 Interface Configuration</title>
+    <title>Day1 Interface Configuration</title>
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>Unconfigured Interfaces</h2>
-          {% for intf in interfaces %}
-            <form action="/day1/interfaces/template" method="get">
-                <input type="hidden" name="interface_name" value="{{ intf.name }}">
-                <input type="hidden" name="device_id" value="{{ device_id }}">
-                <button type="submit">{{ intf.name }} - {{ intf.status }}</button>
-            </form>
-          {% endfor %}
-    </div>
+<div class="container">
+    <h2>All Interfaces</h2>
+    {% for intf in interfaces %}
+        <form action="/day1/interfaces/template" method="get">
+            <input type="hidden" name="interface_name" value="{{ intf.name }}">
+            <input type="hidden" name="device_id" value="{{ device_id }}">
+            <button type="submit">
+                {{ intf.name }} - {{ intf.status }}
+                {% if intf.status == 'configured' %}
+                    (Reconfigure)
+                {% else %}
+                    (Configure)
+                {% endif %}
+            </button>
+        </form>
+    {% endfor %}
+</div>
 </body>
 </html>
