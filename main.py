@@ -211,12 +211,6 @@ async def config_int(request: Request):
     if "netmask" in form:
         context["netmask"] = form["netmask"]
 
-    if "ipv4_enabled" in form:
-        context["ipv4_enabled"] = "true"
-
-    if "ipv4_forwarding" in form:
-        context["ipv4_forwarding"] = "true"
-
     if "ipv4_mtu" in form:
         context["ipv4_mtu"] = form["ipv4_mtu"]
 
