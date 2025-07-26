@@ -225,16 +225,18 @@ def get_interface_ip(mgr, interface_name):
       <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
         <interface>
           <name>{interface_name}</name>
+          <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip"/>
         </interface>
       </interfaces>
     </filter>
     """
-    result = mgr.get_config(source='running', filter=filter_xml)
-    xml_data = xmltodict.parse(result.xml)
+
+    result = mgr.get_config(source='running', filter=("subtree", filter_xml))
+    data = xmltodict.parse(result.xml)
 
 
     try:
-        ip_info = xml_data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
+        ip_info = data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
         ip = ip_info["ip"]
         netmask = ip_info["netmask"]
         return ip, netmask
