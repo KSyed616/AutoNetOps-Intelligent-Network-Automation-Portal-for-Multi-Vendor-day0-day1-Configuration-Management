@@ -239,7 +239,7 @@ async def config_int(request: Request):
 
         print(config_temp)
         print(interface_name)
-        delete_int(device_id, int)
+        delete_int(device_id, interface_name)
         push_int(config_temp, interface_name.strip())
 
     return RedirectResponse("/dashboard", status_code=303)

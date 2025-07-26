@@ -230,9 +230,11 @@ def get_interface_ip(mgr, interface_name):
       </interfaces>
     </filter>
     """
+    print(filter_xml)
 
     result = mgr.get_config(source='running', filter=("subtree", filter_xml))
     data = xmltodict.parse(result.xml)
+    print("dd", data)
 
 
     try:
@@ -254,6 +256,7 @@ def delete_int(device_id, interface_name, ):
             password=device["password"],
             hostkey_verify=False
     ) as mgr:
+        print("omt", interface_name)
         ip, netmask = get_interface_ip(mgr, interface_name)
 
         if not ip or not netmask:
