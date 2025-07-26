@@ -6,7 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp
+from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp, \
+    push_interface_config
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0
 from schema import Device
 
@@ -223,7 +224,9 @@ async def config_int(request: Request):
     print("context", context)
     device_id = int(form["device_id"])
     interface_status = str(form["interface_status"])
-    validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang", is_reconfig=True if interface_status == "Enabled" else False)
+    is_reconfig = True if interface_status == "Enabled" else False
+
+    validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang", is_reconfig)
 
     if validate_resp:
         config_temp = create_temp(
@@ -234,6 +237,8 @@ async def config_int(request: Request):
 
         print(config_temp)
         push_int(config_temp, device_id)
+
+        push_interface_config(device_id, config_temp, context["name"], is_reconfig)
 
     return RedirectResponse("/dashboard", status_code=303)
 
