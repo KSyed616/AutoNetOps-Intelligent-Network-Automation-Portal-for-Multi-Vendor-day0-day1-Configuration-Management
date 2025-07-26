@@ -220,25 +220,9 @@ def push_int(xml_string, device_id):
 
 
 def get_interface_ip(mgr, interface_name):
-    filter_xml = f"""
+    filter_xml = """
     <filter>
-      <interfaces xmlns="http://openconfig.net/yang/interfaces">
-        <interface>
-          <name>{interface_name}</name>
-          <subinterfaces>
-            <subinterface>
-              <index>0</index>
-              <ipv4 xmlns="http://openconfig.net/yang/interfaces/ip">
-                <addresses>
-                  <address>
-                    <ip></ip>
-                  </address>
-                </addresses>
-              </ipv4>
-            </subinterface>
-          </subinterfaces>
-        </interface>
-      </interfaces>
+      <interfaces xmlns="http://openconfig.net/yang/interfaces"/>
     </filter>
     """
 
