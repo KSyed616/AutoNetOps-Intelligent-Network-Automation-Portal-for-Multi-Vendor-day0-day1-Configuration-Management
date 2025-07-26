@@ -222,7 +222,17 @@ def push_int(xml_string, device_id):
 def get_interface_ip(mgr, interface_name):
     filter_xml = """
     <filter>
-      <interfaces xmlns="http://openconfig.net/yang/interfaces"/>
+        <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+            <interface>
+                <name/>
+                <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+                    <address>
+                        <ip/>
+                        <netmask/>
+                    </address>
+                </ipv4>
+            </interface>
+        </interfaces>
     </filter>
     """
 
