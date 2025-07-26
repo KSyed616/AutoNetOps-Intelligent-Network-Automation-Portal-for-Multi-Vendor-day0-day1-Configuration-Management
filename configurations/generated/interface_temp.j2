@@ -9,7 +9,7 @@
           <description>{{ description }}</description>
         {% if not is_reconfig %}<enabled>{{ enabled }}</enabled>{% endif %}
       <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-            <address xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xc:operation="replace">
+            <address>
               <ip>{{ ipv4_address }}</ip>
               <netmask>{{ netmask }}</netmask>
         </address>

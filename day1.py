@@ -156,46 +156,6 @@ def get_template_variables(template_path: str):
     return meta.find_undeclared_variables(parsed_content)
 
 
-def get_interface_ip(mgr, interface_name):
-    filter_xml = f"""
-    <filter>
-      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-        <interface>
-          <name>{interface_name}</name>
-        </interface>
-      </interfaces>
-    </filter>
-    """
-    result = mgr.get_config(source='running', filter=filter_xml)
-    xml_data = xmltodict.parse(result.xml)
-
-    try:
-        ip_info = xml_data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
-        ip = ip_info["ip"]
-        netmask = ip_info["netmask"]
-        return ip, netmask
-    except KeyError:
-        return None, None
-
-
-def gen_delete_ip_config(interface_name, ip, netmask):
-    return f"""
-    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-        <interface>
-          <name>{interface_name}</name>
-          <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-            <address xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xc:operation="delete">
-              <ip>{ip}</ip>
-              <netmask>{netmask}</netmask>
-            </address>
-          </ipv4>
-        </interface>
-      </interfaces>
-    </config>
-    """
-
-
 def create_temp(template_name, context, is_reconfig):
     env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
     template = env.get_template(template_name)
@@ -258,20 +218,3 @@ def push_int(xml_string, device_id):
         print("NETCONF Response:\n", response)
         return response
 
-
-def push_interface_config(device_id, new_config, interface_name, is_reconfig):
-    device = db_derivation(device_id)
-
-    with manager.connect(host=device["host"],
-                         port=device["port"],
-                         username=device["username"],
-                         password=device["password"],
-                         hostkey_verify=False, device_params={"name": "csr"}) as m:
-        if is_reconfig:
-            current_ip, current_netmask = get_interface_ip(m, interface_name)
-            if current_ip:
-                delete_config = gen_delete_ip_config(interface_name, current_ip, current_netmask)
-                print("Deleting old IP before reconfig...")
-                m.edit_config(target="running", config=delete_config, default_operation="none")
-        # Now push new config
-        m.edit_config(target="running", config=new_config, default_operation="merge")
