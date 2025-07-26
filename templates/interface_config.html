@@ -15,7 +15,7 @@
             <input type="hidden" name="device_id" value="{{ device_id }}">
             <button type="submit">
                 {{ intf.name }} - {{ intf.status }}
-                {% if intf.status == 'configured' %}
+                {% if intf.status == 'Enabled' %}
                     (Reconfigure)
                 {% else %}
                     (Configure)

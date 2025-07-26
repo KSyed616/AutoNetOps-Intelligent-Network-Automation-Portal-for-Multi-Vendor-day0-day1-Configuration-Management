@@ -223,13 +223,13 @@ async def config_int(request: Request):
     print("context", context)
     device_id = int(form["device_id"])
     interface_status = str(form["interface_status"])
-    validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang")
+    validate_resp = validate("interface_temp.j2", context, "/app/models", "ietf-interfaces.yang", is_reconfig=True if interface_status == "Enabled" else False)
 
     if validate_resp:
         config_temp = create_temp(
             "interface_temp.j2",
             context,
-            is_reconfig=True if interface_status == "configurable" else False
+            is_reconfig=True if interface_status == "Enabled" else False
         )
 
         print(config_temp)

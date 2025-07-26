@@ -161,13 +161,14 @@ def create_temp(template_name, context, is_reconfig):
     template = env.get_template(template_name)
 
     context["is_reconfig"] = is_reconfig
+    print("is reconfig", is_reconfig)
 
     xml_string = template.render(context)
     return xml_string
 
 
-def validate(template_name, context, yang_model_dir: str, module_file: str):
-    xml_string = create_temp(template_name, context)
+def validate(template_name, context, yang_model_dir: str, module_file: str, is_reconfig: bool):
+    xml_string = create_temp(template_name, context, is_reconfig)
 
     with tempfile.NamedTemporaryFile(mode='w+', suffix=".xml", delete=False) as tmp:
         tmp.write(xml_string)
