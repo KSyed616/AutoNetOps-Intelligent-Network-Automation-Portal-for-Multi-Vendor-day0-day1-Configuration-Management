@@ -240,7 +240,7 @@ def day0():
             continue
 
         device_type = row[7].lower()
-        mgmt_int = "GigabitEthernet0/0" if device_type == "switch" else "GigabitEthernet1"
+        mgmt_int = "Vlan1" if device_type == "switch" else "GigabitEthernet1"
         default_gw = get_default_gateway(row[2]) if device_type == "switch" else None
 
         context = {
@@ -313,7 +313,7 @@ def day0_single(device_id: int):
         raise HTTPException(status_code=400, detail="Node ID not set for this device.")
 
     device_type = row[7].lower()
-    mgmt_int = "GigabitEthernet0/0" if device_type == "switch" else "GigabitEthernet1"
+    mgmt_int = "Vlan1" if device_type == "switch" else "GigabitEthernet1"
     default_gw = get_default_gateway(row[2]) if device_type == "switch" else None
 
     context = {
