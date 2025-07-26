@@ -1,12 +1,18 @@
 hostname {{ hostname }}
-ip domain_name {{ domain_name }}
+ip domain-name {{ domain_name }}
 crypto key generate rsa modulus 2048
 ip ssh version 2
 
 username {{ username }} secret {{ password }}
 line vty 0 4
-    login local
-    transport input ssh
+ login local
+ transport input ssh
 
 netconf-yang
 restconf
+
+interface vlan1
+ ip address {{ mgmt_ip }} {{ mgmt_mask }}
+ no shutdown
+
+ip default-gateway {{ default_gw }}

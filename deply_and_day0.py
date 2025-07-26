@@ -239,16 +239,21 @@ def day0():
         if not node_id:
             continue
 
+        device_type = row[7].lower()
+        mgmt_int = "Vlan1" if device_type == "switch" else "GigabitEthernet1"
+        default_gw = get_default_gateway(row[2]) if device_type == "switch" else None
+
         context = {
             "hostname": row[1],
-            "mgmt_int": "GigabitEthernet1",
+            "mgmt_int": mgmt_int,
             "mgmt_ip": row[2],
             "mgmt_mask": "255.255.255.0",
             "domain_name": "example.com",
             "username": row[5],
             "password": row[6],
             "ntp_server": "1.1.1.1",
-            "syslog_server": "2.2.2.2"
+            "syslog_server": "2.2.2.2",
+            "default_gw": default_gw
         }
 
         platform = row[3].lower()
@@ -307,20 +312,24 @@ def day0_single(device_id: int):
     if not node_id:
         raise HTTPException(status_code=400, detail="Node ID not set for this device.")
 
+    device_type = row[7].lower()
+    mgmt_int = "Vlan1" if device_type == "switch" else "GigabitEthernet1"
+    default_gw = get_default_gateway(row[2]) if device_type == "switch" else None
+
     context = {
         "hostname": row[1],
-        "mgmt_int": "GigabitEthernet1",
+        "mgmt_int": mgmt_int,
         "mgmt_ip": row[2],
         "mgmt_mask": "255.255.255.0",
         "domain_name": "example.com",
         "username": row[5],
         "password": row[6],
         "ntp_server": "1.1.1.1",
-        "syslog_server": "2.2.2.2"
+        "syslog_server": "2.2.2.2",
+        "default_gw": default_gw
     }
 
     platform = row[3].lower()
-    device_type = row[7].lower()
     template = f"{platform}/day0_{device_type}_config.j2"
 
     configuration = config(template, context)
@@ -373,13 +382,13 @@ def get_vendor_handler(platform):
         raise ValueError(f"Unsupported vendor platform: {platform}")
 
 
-def get_suffix(value):
-    value = value.lower().strip()
-
-    if re.match(r"^(r|router|sw|switch)", value):
-        match = re.search(r"(\d+)$", value)
-        return match.group(1) if match else None
-    return None
+def get_default_gateway(ip_address: str):
+    parts = ip_address.strip().split(".")
+    if len(parts) == 4:
+        parts[-1] = "1"
+        return ".".join(parts)
+    else:
+        raise ValueError("Invalid IP address format")
 
 
 def config(template_name, context: dict):
