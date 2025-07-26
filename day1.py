@@ -218,3 +218,60 @@ def push_int(xml_string, device_id):
         print("NETCONF Response:\n", response)
         return response
 
+
+def get_interface_ip(mgr, interface_name):
+    filter_xml = f"""
+    <filter>
+      <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+        <interface>
+          <name>{interface_name}</name>
+        </interface>
+      </interfaces>
+    </filter>
+    """
+    result = mgr.get_config(source='running', filter=filter_xml)
+    xml_data = xmltodict.parse(result.xml)
+
+    try:
+        ip_info = xml_data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
+        ip = ip_info["ip"]
+        netmask = ip_info["netmask"]
+        return ip, netmask
+    except KeyError:
+        return None, None
+
+
+def delete_int(device_id, interface_name, ):
+    device = db_derivation(device_id)
+
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
+    ) as mgr:
+        ip, netmask = get_interface_ip(mgr, interface_name)
+
+        if not ip or not netmask:
+            print("No IP config found to delete.")
+            return
+
+        delete_config = f"""
+           <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+               <interface>
+                 <name>{interface_name}</name>
+                 <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+                   <address xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xc:operation="delete">
+                     <ip>{ip}</ip>
+                     <netmask>{netmask}</netmask>
+                   </address>
+                 </ipv4>
+               </interface>
+             </interfaces>
+           </config>
+           """
+
+        response = mgr.edit_config(target='running', config=delete_config, default_operation='none')
+        print(response)
