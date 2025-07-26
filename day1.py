@@ -225,11 +225,11 @@ def get_interface_ip(mgr, interface_name):
       <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
         <interface>
           <name>{interface_name}</name>
-          <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip"/>
         </interface>
       </interfaces>
     </filter>
     """
+
     print(filter_xml)
 
     result = mgr.get_config(source='running', filter=("subtree", filter_xml))
