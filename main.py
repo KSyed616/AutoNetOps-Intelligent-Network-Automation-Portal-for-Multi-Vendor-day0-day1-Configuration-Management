@@ -238,6 +238,7 @@ async def config_int(request: Request):
         )
 
         print(config_temp)
+        print(interface_name)
         delete_int(device_id, int)
         push_int(config_temp, interface_name.strip())
 

@@ -208,7 +208,7 @@ def push_int(xml_string, device_id):
             port=device["port"],
             username=device["username"],
             password=device["password"],
-            hostkey_verify=False
+            hostkey_verify=False,
     ) as m:
         response = m.edit_config(
             target='running',
@@ -231,6 +231,7 @@ def get_interface_ip(mgr, interface_name):
     """
     result = mgr.get_config(source='running', filter=filter_xml)
     xml_data = xmltodict.parse(result.xml)
+
 
     try:
         ip_info = xml_data["rpc-reply"]["data"]["interfaces"]["interface"]["ipv4"]["address"]
@@ -273,5 +274,6 @@ def delete_int(device_id, interface_name, ):
            </config>
            """
 
+        print(delete_config)
         response = mgr.edit_config(target='running', config=delete_config, default_operation='none')
         print(response)
