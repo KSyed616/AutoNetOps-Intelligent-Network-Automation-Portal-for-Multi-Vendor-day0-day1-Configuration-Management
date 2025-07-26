@@ -221,38 +221,15 @@ def push_int(xml_string, device_id):
 
 def get_interface_ip(mgr, interface_name):
     filter_xml = """
-    <filter>
-        <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-            <interface>
-                <name/>
-                <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-                    <address>
-                        <ip/>
-                        <netmask/>
-                    </address>
-                </ipv4>
-            </interface>
-        </interfaces>
-    </filter>
-    """
+        <filter>
+            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"/>
+        </filter>
+        """
 
-    print(filter_xml)
-
-    result = mgr.get_config(source='running', filter=("subtree", filter_xml))
-    data = xmltodict.parse(result.xml)
-    print("dd", data)
-
-    try:
-        intf = data["rpc-reply"]["data"]["interfaces"]["interface"]
-        subintf = intf["subinterfaces"]["subinterface"]
-        address = subintf["ipv4"]["addresses"]["address"]
-
-        ip = address["ip"]
-        netmask = address["config"]["prefix-length"]
-
-        return ip, netmask
-    except KeyError:
-        return None, None
+    result = mgr.get_config(source='running', filter=('subtree', filter_xml))
+    print("Raw XML:")
+    print(result.xml)
+    return result
 
 
 def delete_int(device_id, interface_name, ):
