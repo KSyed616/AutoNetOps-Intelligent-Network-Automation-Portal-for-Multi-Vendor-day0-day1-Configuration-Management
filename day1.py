@@ -204,7 +204,7 @@ def push_int(xml_string, device_id):
         response = m.edit_config(
             target='running',
             config=xml_string,
-            default_operation='replace')
+            default_operation='merge')
 
         print("NETCONF Response:\n", response)
         return response
