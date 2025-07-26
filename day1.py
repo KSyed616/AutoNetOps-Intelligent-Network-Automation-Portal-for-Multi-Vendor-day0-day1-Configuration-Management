@@ -202,9 +202,10 @@ def push_int(xml_string, device_id):
             hostkey_verify=False
     ) as m:
         response = m.edit_config(
-            target="running",
-            config=xml_string
-        )
+            target='running',
+            config=xml_string,
+            default_operation='replace')
+
         print("NETCONF Response:\n", response)
         return response
 
