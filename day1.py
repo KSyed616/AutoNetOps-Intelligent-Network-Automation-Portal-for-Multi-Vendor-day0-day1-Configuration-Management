@@ -227,7 +227,7 @@ def get_interface_ip(mgr, interface_name):
                     <name>{interface_name}</name>
                 </interface>
             </interfaces>
-            <interface-state xmlns="urn:ietf:param:xml:ns:yang:ietf-interfaces">
+            <interface -state xmlns="urn:ietf:param:xml:ns:yang:ietf-interfaces">
                 <interface>
                     <name>{interface_name}</name>
                 </interface>
