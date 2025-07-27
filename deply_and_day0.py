@@ -22,7 +22,7 @@ def cml_login():
         database=os.getenv("DB_NAME", "AutoNetOps")
     )
 
-    CML_URL = "https://cml-36.compnet.ryerson.ca"
+    CML_URL = "https://10.10.133.57"
     user = "admin"
     password = "CompNet1234"
 
@@ -203,7 +203,7 @@ def edit_onboard(device_id: int, device: Device):
 
 
 def day0():
-    cml_url = "https://cml-36.compnet.ryerson.ca"
+    cml_url = "https://10.10.133.57"
 
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "127.0.0.1"),
@@ -271,7 +271,7 @@ def day0():
 
 
 def day0_single(device_id: int):
-    cml_url = "https://cml-36.compnet.ryerson.ca"
+    cml_url = "https://10.10.133.57"
 
     conn = mysql.connector.connect(
         host=os.getenv("DB_HOST", "127.0.0.1"),

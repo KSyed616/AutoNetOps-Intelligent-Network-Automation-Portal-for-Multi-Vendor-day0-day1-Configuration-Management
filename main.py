@@ -8,7 +8,7 @@ from starlette import status
 
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp, \
     delete_int
-from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0
+from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from schema import Device
 
 app = FastAPI()
@@ -25,6 +25,7 @@ def login_page(request: Request):
 
 @app.post("/login")
 def login():
+    cml_login()
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
@@ -239,7 +240,7 @@ async def config_int(request: Request):
 
         print(config_temp)
         print(interface_name)
-        delete_int(device_id, interface_name)
+        #delete_int(device_id, interface_name)
         push_int(config_temp, interface_name.strip())
 
     return RedirectResponse("/dashboard", status_code=303)
