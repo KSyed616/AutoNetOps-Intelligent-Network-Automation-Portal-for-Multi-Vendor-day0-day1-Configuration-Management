@@ -309,7 +309,6 @@ def get_interface_ip(device_id, interface_name):
         except Exception as e:
             print(f"Error retrieving IP info: {e}")
             return {
-                "interface": interface_name,
                 "ip_address": None,
                 "netmask": None
             }
