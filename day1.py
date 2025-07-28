@@ -315,15 +315,15 @@ def get_interface_ip(device_id, interface_name):
             }
 
 
-def delete_int(device_id, interface_name, ):
+def delete_int(device_id, interface_name):
     device = db_derivation(device_id)
 
     with manager.connect(
-            host=device["host"],
-            port=device["port"],
-            username=device["username"],
-            password=device["password"],
-            hostkey_verify=False
+        host=device["host"],
+        port=device["port"],
+        username=device["username"],
+        password=device["password"],
+        hostkey_verify=False
     ) as mgr:
         print("omt", interface_name)
         ip, netmask = get_interface_ip(mgr, interface_name)
@@ -333,21 +333,23 @@ def delete_int(device_id, interface_name, ):
             return
 
         delete_config = f"""
-           <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-               <interface>
-                 <name>{interface_name}</name>
-                 <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
-                   <address xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xc:operation="delete">
-                     <ip>{ip}</ip>
-                     <netmask>{netmask}</netmask>
-                   </address>
-                 </ipv4>
-               </interface>
-             </interfaces>
-           </config>
-           """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+                xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+            <interface>
+              <name>{interface_name}</name>
+              <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+                <address xc:operation="delete">
+                  <ip>{ip}</ip>
+                  <netmask>{netmask}</netmask>
+                </address>
+              </ipv4>
+            </interface>
+          </interfaces>
+        </config>
+        """
 
         print(delete_config)
         response = mgr.edit_config(target='running', config=delete_config, default_operation='none')
         print(response)
+

@@ -267,7 +267,10 @@ async def config_int(request: Request):
 
         print(config_temp)
         print(interface_name)
-        # delete_int(device_id, interface_name)
+
+        if is_reconfig:
+            delete_int(device_id, interface_name)
+
         push_config(config_temp, device_id)
         print(get_interface_ip(device_id, interface_name))
 
