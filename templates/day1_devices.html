@@ -10,7 +10,7 @@
         <h2>Select a Device for Day 1 Configuration</h2>
 
         {% for device in devices %}
-            <form action="/day1/interfaces" method="post">
+            <form action="/day1/configurations" method="post">
                 <input type="hidden" name="device_id" value="{{ device.device_id }}">
                 <button type="submit">{{ device.hostname }}</button>
             </form>

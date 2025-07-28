@@ -6,8 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, push_int, create_temp, \
-    delete_int
+from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
+    delete_int, push_config, gen_ospf_temp
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from schema import Device
 
@@ -140,6 +140,14 @@ def day0_single_device(device_id: int = Form(...)):
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
+@app.post("/day1/configuration")
+def ospf_template(device_id: int):
+    return templates.TemplateResponse(
+        "day1_config.html",
+        {"device_id": device_id}
+    )
+
+
 @app.post("/day1/interfaces", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Form(...)):
     day1_hello(device_id)
@@ -150,14 +158,23 @@ def day1_interfaces(request: Request, device_id: int = Form(...)):
     )
 
 
+@app.post("/day1/ospf", response_class=HTMLResponse)
+def day1_ospf(request: Request, device_id: int = Form(...)):
+    fields = get_template_variables("ospf_temp.j2")
+
+    return templates.TemplateResponse("ospf_yang.html", {
+        "request": request,
+        "fields": fields,
+        "device_id": device_id
+    })
+
+
 @app.post("/template")
 def template(request: Request, temp_type: str = Form(...)):
     if temp_type == "interface":
         return templates.TemplateResponse("interface_temp.html", {"request": request})
-    elif temp_type == "rip":
-        return templates.TemplateResponse("rip_config.html", {"request": request})
     elif temp_type == "ospf":
-        return templates.TemplateResponse("ospf_config.html", {"request": request})
+        return templates.TemplateResponse("ospf_temp.html", {"request": request})
     else:
         return RedirectResponse("/dashboard")
 
@@ -165,15 +182,20 @@ def template(request: Request, temp_type: str = Form(...)):
 @app.post("/template/interface")
 def interface_template(fields: List[str] = Form(...),
                        ipv4_prefix_option: str = Form(...)):
-
     gen_int_temp(fields, ipv4_prefix_option)
 
     return RedirectResponse("/dashboard", status_code=303)
 
 
-@app.get("/day1/interfaces/template", response_class=HTMLResponse)
-def get_int_config(request: Request, interface_name: str = Query(...), interface_status: str = Query(...), device_id: str = Query(...)):
+@app.post("/template/ospf")
+def ospf_template(fields: List[str] = Form(...)):
+    gen_ospf_temp(fields)
+    return RedirectResponse(url="/dashboard", status_code=303)
 
+
+@app.get("/day1/interfaces/template", response_class=HTMLResponse)
+def get_int_config(request: Request, interface_name: str = Query(...), interface_status: str = Query(...),
+                   device_id: str = Query(...)):
     print(f"Interface selected for config: {interface_name}")
     fields = get_template_variables("interface_temp.j2")
 
@@ -240,10 +262,59 @@ async def config_int(request: Request):
 
         print(config_temp)
         print(interface_name)
-        #delete_int(device_id, interface_name)
-        push_int(config_temp, interface_name.strip())
+        # delete_int(device_id, interface_name)
+        push_config(config_temp, interface_name.strip())
 
     return RedirectResponse("/dashboard", status_code=303)
+
+
+@app.post("/day1/ospf/config", response_class=HTMLResponse)
+async def config_ospf(request: Request):
+    form = await request.form()
+
+    context = {
+        "router_id": form["router_id"],
+        "protocol_type": "ietf-ospf:ospfv2"  # Fixed for this case
+    }
+
+    # Optional fields
+    if "name" in form:
+        context["name"] = form["name"]
+
+    if "description" in form:
+        context["description"] = form["description"]
+
+    if "interface" in form:
+        context["interface"] = form["interface"]
+
+    if "area" in form:
+        context["area"] = form["area"]
+
+    if "metric" in form:
+        context["metric"] = form["metric"]
+
+    if "passive" in form:
+        context["passive"] = "true"
+
+    print("OSPF context:", context)
+
+    device_id = int(form["device_id"])
+    is_reconfig = True
+
+    validate_resp = validate("ospf_temp.j2", context, "/app/models", "ietf-routing@2018-03-13.yang", is_reconfig)
+
+    if validate_resp:
+        config_temp = create_temp(
+            "ospf_temp.j2",
+            context,
+            is_reconfig
+        )
+
+        print("Rendered OSPF Config:\n", config_temp)
+        push_config(config_temp, device_id)
+
+    return RedirectResponse("/dashboard", status_code=303)
+
 
 if __name__ == "__main__":
     import uvicorn

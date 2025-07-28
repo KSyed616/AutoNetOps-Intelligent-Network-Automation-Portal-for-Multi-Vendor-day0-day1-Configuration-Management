@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Interface Template Creation</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <form method="POST" action="/template/ospf">
+      <h3>OSPF Configuration Fields (Select optional fields)</h3>
+
+      <label>
+        <input type="checkbox" name="fields" value="router-id" checked disabled>
+        Router ID (mandatory)
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="area-id" checked disabled>
+        Area ID (mandatory)
+      </label><br>
+
+      <h4>Interface Configuration</h4>
+      <label>
+        <input type="checkbox" name="fields" value="interface-name">
+        Interface Name (must match defined interface)
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="interface-network-type">
+        Network Type (broadcast, point-to-point, etc.)
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="interface-passive">
+        Passive Interface
+      </label><br>
+
+      <h4>Global OSPF Settings</h4>
+      <label>
+        <input type="checkbox" name="fields" value="ospf-reference-bandwidth">
+        Reference Bandwidth
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="ospf-timers">
+        OSPF Timers (Hello/Dead Intervals)
+      </label><br>
+
+      <h4>Static Routes (Optional)</h4>
+      <label>
+        <input type="checkbox" name="fields" value="static-routes">
+        Configure Static Routes
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="next-hop">
+        Next Hop Address
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="outgoing-interface">
+        Outgoing Interface
+      </label><br>
+
+      <h4>RIB Settings (Optional)</h4>
+      <label>
+        <input type="checkbox" name="fields" value="rib-name">
+        RIB Name
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="default-rib">
+        Set as Default RIB
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="route-preference">
+        Route Preference
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="source-protocol">
+        Source Protocol
+      </label><br>
+
+      <button type="submit">Generate OSPF Template</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -149,6 +149,59 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
         f.write(template_str)
 
 
+def gen_ospf_temp(fields: List[str]):
+    template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <routing xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
+    <control-plane-protocols>
+      <control-plane-protocol>
+        <type xmlns:rt="urn:ietf:params:xml:ns:yang:ietf-routing">rt:ospf</type>
+        <name>OSPF</name>
+        <ospf xmlns="urn:ietf:params:xml:ns:yang:ietf-ospf">
+"""
+
+    if "router-id" in fields:
+        template_str += "          <router-id>{{ router_id }}</router-id>\n"
+
+    if "reference-bandwidth" in fields:
+        template_str += "          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>\n"
+
+    template_str += """          <areas>
+            <area>
+              <identifier>{{ area_id }}</identifier>
+"""
+
+    if "interface-name" in fields:
+        template_str += """              <interfaces>
+                <interface>
+                  <name>{{ interface_name }}</name>
+"""
+
+        if "interface-network-type" in fields:
+            template_str += "                  <network-type>{{ network_type }}</network-type>\n"
+
+        if "interface-passive" in fields:
+            template_str += "                  <passive>{{ passive }}</passive>\n"
+
+        template_str += "                </interface>\n              </interfaces>\n"
+
+    template_str += """            </area>
+                                  </areas>
+                                </ospf>
+                              </control-plane-protocol>
+                            </control-plane-protocols>
+                          </routing>
+                        </config>
+                        """
+
+    output_dir = "configurations/generated"
+    os.makedirs(output_dir, exist_ok=True)
+
+    with open(os.path.join(output_dir, "ospf_temp.j2"), "w") as f:
+        f.write(template_str)
+
+    print("OSPF Jinja2 template saved to configurations/generated/ospf_temp.j2")
+
+
 def get_template_variables(template_path: str):
     env = Environment(loader=FileSystemLoader("/app/configurations/generated"))
     template_source = env.loader.get_source(env, template_path)[0]
@@ -199,7 +252,7 @@ def validate(template_name, context, yang_model_dir: str, module_file: str, is_r
         os.remove(tmp_path)
 
 
-def push_int(xml_string, device_id):
+def push_config(xml_string, device_id):
     device = db_derivation(device_id)
     print("device ", device)
 
