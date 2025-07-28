@@ -159,8 +159,7 @@ def gen_ospf_temp(fields: List[str]):
         <ospf xmlns="urn:ietf:params:xml:ns:yang:ietf-ospf">
 """
 
-    if "router-id" in fields:
-        template_str += "          <router-id>{{ router_id }}</router-id>\n"
+    template_str += "          <router-id>{{ router_id }}</router-id>\n"
 
     if "reference-bandwidth" in fields:
         template_str += "          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>\n"
