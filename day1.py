@@ -273,26 +273,46 @@ def push_config(xml_string, device_id):
         return response
 
 
-def get_interface_ip(mgr, interface_name):
+def get_interface_ip(device_id, interface_name):
+    device = db_derivation(device_id)
+
     filter_xml = f"""
-        <filter>
-            <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-                <interface>
-                    <name>{interface_name}</name>
-                </interface>
-            </interfaces>
-            <interfaces-state xmlns="urn:ietf:param:xml:ns:yang:ietf-interfaces">
-                <interface>
-                    <name>{interface_name}</name>
-                </interface>
-            </interfaces-state>
-        </filter>
+        <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+          <interface>
+            <name>{interface_name}</name>
+          </interface>
+        </interfaces>
         """
 
-    result = mgr.get_config(filter_xml)
-    print("Raw XML:")
-    print(result.xml)
-    return result
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
+    ) as m:
+        response = m.get_config(source="running", filter=("subtree", filter_xml))
+        data = xmltodict.parse(response.xml)
+
+        try:
+            interface_data = data['rpc-reply']['data']['interfaces']['interface']
+            ipv4_info = interface_data.get("ipv4", {}).get("address", {})
+
+            ip_address = ipv4_info.get("ip")
+            netmask = ipv4_info.get("netmask")
+
+            return {
+                "interface": interface_name,
+                "ip_address": ip_address,
+                "netmask": netmask
+            }
+        except Exception as e:
+            print(f"Error retrieving IP info: {e}")
+            return {
+                "interface": interface_name,
+                "ip_address": None,
+                "netmask": None
+            }
 
 
 def delete_int(device_id, interface_name, ):

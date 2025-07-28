@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
-    delete_int, push_config, gen_ospf_temp
+    delete_int, push_config, gen_ospf_temp, get_interface_ip
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from schema import Device
 
@@ -269,6 +269,7 @@ async def config_int(request: Request):
         print(interface_name)
         # delete_int(device_id, interface_name)
         push_config(config_temp, device_id)
+        get_interface_ip(device_id, interface_name)
 
     return RedirectResponse("/dashboard", status_code=303)
 
