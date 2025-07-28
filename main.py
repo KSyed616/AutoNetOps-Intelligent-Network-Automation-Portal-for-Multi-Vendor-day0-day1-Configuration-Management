@@ -143,6 +143,7 @@ def day0_single_device(device_id: int = Form(...)):
 
 @app.post("/day1/configurations")
 def day1_options(request: Request, device_id: int = Form(...)):
+    print("dev", device_id)
     return templates.TemplateResponse(
         "day1_config.html",
         {"request": request,
@@ -151,7 +152,8 @@ def day1_options(request: Request, device_id: int = Form(...)):
 
 
 @app.get("/day1/interface", response_class=HTMLResponse)
-def day1_interfaces(request: Request, device_id: int = Form(...)):
+def day1_interfaces(request: Request, device_id: int = Query(...)):
+
     day1_hello(device_id)
     interface_data = get_interfaces(device_id)
     return templates.TemplateResponse(
@@ -161,7 +163,7 @@ def day1_interfaces(request: Request, device_id: int = Form(...)):
 
 
 @app.get("/day1/ospf", response_class=HTMLResponse)
-def day1_ospf(request: Request, device_id: int = Form(...)):
+def day1_ospf(request: Request, device_id: int = Query(...)):
     fields = get_template_variables("ospf_temp.j2")
 
     return templates.TemplateResponse("ospf_yang.html", {
@@ -265,7 +267,7 @@ async def config_int(request: Request):
         print(config_temp)
         print(interface_name)
         # delete_int(device_id, interface_name)
-        push_config(config_temp, interface_name.strip())
+        push_config(config_temp, device_id)
 
     return RedirectResponse("/dashboard", status_code=303)
 

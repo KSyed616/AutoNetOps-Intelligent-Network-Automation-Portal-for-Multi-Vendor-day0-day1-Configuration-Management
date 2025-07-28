@@ -253,6 +253,8 @@ def validate(template_name, context, yang_model_dir: str, module_file: str, is_r
 
 
 def push_config(xml_string, device_id):
+    print("dev", device_id)
+
     device = db_derivation(device_id)
     print("device ", device)
 
@@ -266,7 +268,7 @@ def push_config(xml_string, device_id):
         response = m.edit_config(
             target='running',
             config=xml_string,
-            default_operation='replace')
+            default_operation='merge')
 
         print("NETCONF Response:\n", response)
         return response

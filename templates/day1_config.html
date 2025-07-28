@@ -9,14 +9,14 @@
   <div class="container">
     <h2>Choose Configuration Type</h2>
 
-    <input type="hidden" name="device_id" value="{{ device_id }}">
-
     <form method="GET" action="/day1/interface">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
       <button type="submit">Configure Interface</button>
     </form>
     <br>
 
     <form method="GET" action="/day1/ospf">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
       <button type="submit">Configure OSPF</button>
     </form>
   </div>
