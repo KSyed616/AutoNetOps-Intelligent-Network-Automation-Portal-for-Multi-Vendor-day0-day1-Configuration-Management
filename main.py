@@ -1,5 +1,6 @@
 from typing import List
 
+from MySQLdb.constants.ER import QUERY_ON_FOREIGN_DATA_SOURCE
 from fastapi import FastAPI, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -140,15 +141,16 @@ def day0_single_device(device_id: int = Form(...)):
     return RedirectResponse(url="/dashboard", status_code=303)
 
 
-@app.post("/day1/configuration")
-def ospf_template(device_id: int):
+@app.post("/day1/configurations")
+def day1_options(request: Request, device_id: int = Form(...)):
     return templates.TemplateResponse(
         "day1_config.html",
-        {"device_id": device_id}
+        {"request": request,
+         "device_id": device_id}
     )
 
 
-@app.post("/day1/interfaces", response_class=HTMLResponse)
+@app.get("/day1/interface", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Form(...)):
     day1_hello(device_id)
     interface_data = get_interfaces(device_id)
@@ -158,7 +160,7 @@ def day1_interfaces(request: Request, device_id: int = Form(...)):
     )
 
 
-@app.post("/day1/ospf", response_class=HTMLResponse)
+@app.get("/day1/ospf", response_class=HTMLResponse)
 def day1_ospf(request: Request, device_id: int = Form(...)):
     fields = get_template_variables("ospf_temp.j2")
 
