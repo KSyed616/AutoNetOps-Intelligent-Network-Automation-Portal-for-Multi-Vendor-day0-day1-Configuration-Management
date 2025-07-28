@@ -13,32 +13,32 @@
       <input type="hidden" name="device_id" value="{{ device_id }}">
 
       {% for field in fields %}
-        {% if field == "router-id" %}
+        {% if field == "router_id" %}
           <label>Router ID:</label>
           <input type="text" name="router_id" placeholder="e.g. 1.1.1.1"><br>
 
-        {% elif field == "reference-bandwidth" %}
+        {% elif field == "reference_bandwidth" %}
           <label>Reference Bandwidth (Mbps):</label>
           <input type="number" name="reference_bandwidth" min="1"><br>
 
-        {% elif field == "area-id" %}
+        {% elif field == "area_id" %}
           <label>OSPF Area ID:</label>
           <input type="text" name="area_id" placeholder="e.g. 0.0.0.0 or 0"><br>
 
-        {% elif field == "interface-name" %}
+        {% elif field == "interface_name" %}
           <label>Interface Name:</label>
           <input type="text" name="interface_name"><br>
 
-        {% elif field == "interface-network-type" %}
+        {% elif field == "network_type" %}
           <label>Network Type:</label>
           <select name="network_type">
             <option value="broadcast">broadcast</option>
-            <option value="non-broadcast">non-broadcast</option>
-            <option value="point-to-point">point-to-point</option>
-            <option value="point-to-multipoint">point-to-multipoint</option>
+            <option value="non_broadcast">non-broadcast</option>
+            <option value="point_to_point">point-to-point</option>
+            <option value="point_to_multipoint">point-to-multipoint</option>
           </select><br>
 
-        {% elif field == "interface-passive" %}
+        {% elif field == "passive" %}
           <label>Passive Interface:</label>
           <input type="checkbox" name="passive"><br>
         {% endif %}

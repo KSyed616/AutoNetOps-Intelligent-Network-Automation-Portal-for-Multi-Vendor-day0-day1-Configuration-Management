@@ -165,6 +165,7 @@ def day1_interfaces(request: Request, device_id: int = Query(...)):
 @app.get("/day1/ospf", response_class=HTMLResponse)
 def day1_ospf(request: Request, device_id: int = Query(...)):
     fields = get_template_variables("ospf_temp.j2")
+    print("fields: ", fields)
 
     return templates.TemplateResponse("ospf_yang.html", {
         "request": request,
