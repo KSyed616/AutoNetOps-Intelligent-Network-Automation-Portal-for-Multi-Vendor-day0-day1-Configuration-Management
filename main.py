@@ -310,14 +310,22 @@ async def config_ospf(request: Request):
 
     print("OSPF context:", context)
 
+    context_int = {
+        "type": form["type"],
+        "number": form["number"],
+        "network_type": "point-to-point",
+        "ospf_process_id": form["process_id"],
+        "area": form["area"]
+    }
+
     device_id = int(form["device_id"])
     is_reconfig = True
 
-    validate_resp = validate("ospf_temp.j2", context, "/app/models", "Cisco-IOS-XE-native.yang", is_reconfig)
-
     config_temp = create_temp("ospf_temp.j2", context, is_reconfig)
+    int_ospf_temp = create_temp("ospf_int_config.j2", context, is_reconfig)
     print("Rendered OSPF Config:\n", config_temp)
     push_config(config_temp, device_id)
+    push_config(int_ospf_temp, device_id)
 
     return RedirectResponse("/dashboard", status_code=303)
 

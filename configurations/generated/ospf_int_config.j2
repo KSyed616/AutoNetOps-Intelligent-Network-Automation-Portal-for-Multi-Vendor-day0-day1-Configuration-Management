@@ -1,0 +1,18 @@
+<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <interface>
+      <{{ int.type }}>
+        <name>{{ int.number }}</name>
+        <ip>
+          <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+            <network>{{ int.network_type }}</network>
+            <process>
+              <id>{{ int.ospf_process_id }}</id>
+              <area>{{ int.area }}</area>
+            </process>
+          </ospf>
+        </ip>
+      </{{ int.type }}>
+    </interface>
+  </native>
+</config>
