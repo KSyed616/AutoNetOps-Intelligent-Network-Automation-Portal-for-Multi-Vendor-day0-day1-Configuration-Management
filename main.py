@@ -314,17 +314,20 @@ async def config_ospf(request: Request):
         "type": form["type"],
         "number": form["number"],
         "network_type": "point-to-point",
-        "ospf_process_id": form["process_id"],
+        "process_id": form["process_id"],
+        "router_id": form["router_id"],
         "area": form["area"]
     }
+    print("int context", context_int)
 
     device_id = int(form["device_id"])
     is_reconfig = True
 
     config_temp = create_temp("ospf_temp.j2", context, is_reconfig)
-    int_ospf_temp = create_temp("ospf_int_config.j2", context, is_reconfig)
+    int_ospf_temp = create_temp("ospf_int_config.j2", context_int, is_reconfig)
     print("Rendered OSPF Config:\n", config_temp)
-    push_config(config_temp, device_id)
+    print("Rendered int Config:\n", int_ospf_temp)
+    #push_config(config_temp, device_id)
     push_config(int_ospf_temp, device_id)
 
     return RedirectResponse("/dashboard", status_code=303)
