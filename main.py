@@ -153,7 +153,6 @@ def day1_options(request: Request, device_id: int = Form(...)):
 
 @app.get("/day1/interface", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Query(...)):
-
     day1_hello(device_id)
     interface_data = get_interfaces(device_id)
     return templates.TemplateResponse(
@@ -314,13 +313,7 @@ async def config_ospf(request: Request):
     device_id = int(form["device_id"])
     is_reconfig = True
 
-    validate_resp = validate(
-        "ospf_temp.j2",
-        context,
-        "/app/models",
-        "Cisco-IOS-XE-native.yang",
-        is_reconfig
-    )
+    validate_resp = validate("ospf_temp.j2", context, "/app/models", "Cisco-IOS-XE-native.yang", is_reconfig)
 
     if validate_resp:
         config_temp = create_temp("ospf_temp.j2", context, is_reconfig)

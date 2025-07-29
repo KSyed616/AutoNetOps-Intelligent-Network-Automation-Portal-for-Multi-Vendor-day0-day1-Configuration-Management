@@ -237,6 +237,7 @@ def create_temp(template_name, context, is_reconfig):
 
 def validate(template_name, context, yang_model_dir: str, module_file: str, is_reconfig: bool):
     xml_string = create_temp(template_name, context, is_reconfig)
+    print(xml_string)
 
     with tempfile.NamedTemporaryFile(mode='w+', suffix=".xml", delete=False) as tmp:
         tmp.write(xml_string)
