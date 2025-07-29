@@ -164,6 +164,7 @@ def day1_interfaces(request: Request, device_id: int = Query(...)):
 
 @app.get("/day1/ospf", response_class=HTMLResponse)
 def day1_ospf(request: Request, device_id: int = Query(...)):
+    day1_hello(device_id)
     fields = get_template_variables("ospf_temp.j2")
     print("fields: ", fields)
 
@@ -283,10 +284,9 @@ async def config_ospf(request: Request):
 
     context = {
         "router_id": form["router_id"],
-        "protocol_type": "ietf-ospf:ospfv2"  # Fixed for this case
+        "protocol_type": "ietf-ospf:ospfv2"
     }
 
-    # Optional fields
     if "name" in form:
         context["name"] = form["name"]
 
@@ -304,6 +304,9 @@ async def config_ospf(request: Request):
 
     if "passive" in form:
         context["passive"] = "true"
+
+    if "network_type" in form:
+        context["network_type"] = form["network_type"]
 
     print("OSPF context:", context)
 

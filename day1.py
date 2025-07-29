@@ -302,7 +302,6 @@ def get_interface_ip(device_id, interface_name):
             netmask = ipv4_info.get("netmask")
 
             return {
-                "interface": interface_name,
                 "ip_address": ip_address,
                 "netmask": netmask
             }
@@ -325,7 +324,9 @@ def delete_int(device_id, interface_name):
         hostkey_verify=False
     ) as mgr:
         print("omt", interface_name)
-        ip, netmask = get_interface_ip(mgr, interface_name)
+        ip_info = get_interface_ip(device_id, interface_name)
+        ip = ip_info["ip_address"]
+        netmask = ip_info["netmask"]
 
         if not ip or not netmask:
             print("No IP config found to delete.")
