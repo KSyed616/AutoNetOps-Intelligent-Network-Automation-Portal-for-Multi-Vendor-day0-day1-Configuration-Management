@@ -293,8 +293,8 @@ async def config_ospf(request: Request):
     if "passive_interface" in form:
         context["passive_interface"] = form["passive_interface"]
 
-    if "auto_cost_reference_bandwidth" in form:
-        context["auto_cost_reference_bandwidth"] = form["auto_cost_reference_bandwidth"]
+    if "reference_bandwidth" in form:
+        context["reference_bandwidth"] = form["reference_bandwidth"]
 
     if "default_information_originate" in form:
         context["default_information_originate"] = "true"
