@@ -164,22 +164,38 @@ def gen_ospf_temp(fields: List[str]):
 """
 
     if "passive-interface" in fields:
-        template_str += """        <passive-interface>
+        template_str += """        {% if passive_interface %}
+        <passive-interface>
           <interface>{{ passive_interface }}</interface>
         </passive-interface>
+        {% endif %}
 """
 
     if "auto-cost-reference-bandwidth" in fields:
-        template_str += "        <auto-cost>\n          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>\n        </auto-cost>\n"
+        template_str += """        {% if reference_bandwidth %}
+        <auto-cost>
+          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
+        </auto-cost>
+        {% endif %}
+"""
 
     if "default-information-originate" in fields:
-        template_str += "        <default-information>\n          <originate/>\n        </default-information>\n"
+        template_str += """        {% if default_information %}
+        <default-information>
+          <originate/>
+        </default-information>
+        {% endif %}
+"""
 
     if "log-adjacency-changes" in fields:
-        template_str += "        <log-adjacency-changes/>\n"
+        template_str += """        {% if log_adjacency_changes %}
+        <log-adjacency-changes/>
+        {% endif %}
+"""
 
     if "timers-throttle-spf" in fields:
-        template_str += """        <timers>
+        template_str += """        {% if spf_delay and spf_hold and spf_max %}
+        <timers>
           <throttle>
             <spf>
               <spf-delay>{{ spf_delay }}</spf-delay>
@@ -188,10 +204,12 @@ def gen_ospf_temp(fields: List[str]):
             </spf>
           </throttle>
         </timers>
+        {% endif %}
 """
 
     if "timers-throttle-lsa" in fields:
-        template_str += """        <timers>
+        template_str += """        {% if lsa_start and lsa_hold and lsa_max %}
+        <timers>
           <throttle>
             <lsa>
               <lsa-start>{{ lsa_start }}</lsa-start>
@@ -200,6 +218,7 @@ def gen_ospf_temp(fields: List[str]):
             </lsa>
           </throttle>
         </timers>
+        {% endif %}
 """
 
     template_str += """      </ospf>
@@ -213,8 +232,6 @@ def gen_ospf_temp(fields: List[str]):
 
     with open(os.path.join(output_dir, "ospf_temp.j2"), "w") as f:
         f.write(template_str)
-
-    print("OSPF Jinja2 template saved to configurations/generated/ospf_temp.j2")
 
 
 def get_template_variables(template_path: str):
