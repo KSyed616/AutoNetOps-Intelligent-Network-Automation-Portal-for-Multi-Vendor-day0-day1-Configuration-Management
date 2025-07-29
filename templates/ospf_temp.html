@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Interface Template Creation</title>
+    <title>OSPF Template Creation (Cisco IOS-XE)</title>
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <div class="container">
     <form method="POST" action="/template/ospf">
-      <h3>OSPF Configuration Fields (Select optional fields)</h3>
+      <h3>Cisco IOS-XE OSPF Configuration Fields</h3>
+
+      <label>
+        <input type="checkbox" name="fields" value="process-id" checked disabled>
+        OSPF Process ID (mandatory)
+      </label><br>
 
       <label>
         <input type="checkbox" name="fields" value="router-id" checked disabled>
@@ -16,75 +21,53 @@
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="area-id" checked disabled>
-        Area ID (mandatory)
-      </label><br>
-
-      <h4>Interface Configuration</h4>
-      <label>
-        <input type="checkbox" name="fields" value="interface-name">
-        Interface Name (must match defined interface)
+        <input type="checkbox" name="fields" value="network-ip" checked disabled>
+        Network IP (mandatory)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="interface-network-type">
-        Network Type (broadcast, point-to-point, etc.)
+        <input type="checkbox" name="fields" value="wildcard-mask" checked disabled>
+        Wildcard Mask (mandatory)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="interface-passive">
+        <input type="checkbox" name="fields" value="area" checked disabled>
+        Area (mandatory)
+      </label><br>
+
+      <h4>Optional OSPF Fields</h4>
+
+      <label>
+        <input type="checkbox" name="fields" value="passive-interface">
         Passive Interface
       </label><br>
 
-      <h4>Global OSPF Settings</h4>
       <label>
-        <input type="checkbox" name="fields" value="ospf-reference-bandwidth">
+        <input type="checkbox" name="fields" value="auto-cost-reference-bandwidth">
         Reference Bandwidth
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="ospf-timers">
-        OSPF Timers (Hello/Dead Intervals)
-      </label><br>
-
-      <h4>Static Routes (Optional)</h4>
-      <label>
-        <input type="checkbox" name="fields" value="static-routes">
-        Configure Static Routes
+        <input type="checkbox" name="fields" value="default-information-originate">
+        Originate Default Route
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="next-hop">
-        Next Hop Address
+        <input type="checkbox" name="fields" value="log-adjacency-changes">
+        Log Adjacency Changes
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="outgoing-interface">
-        Outgoing Interface
-      </label><br>
-
-      <h4>RIB Settings (Optional)</h4>
-      <label>
-        <input type="checkbox" name="fields" value="rib-name">
-        RIB Name
+        <input type="checkbox" name="fields" value="timers-throttle-spf">
+        SPF Throttle Timers
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="default-rib">
-        Set as Default RIB
+        <input type="checkbox" name="fields" value="timers-throttle-lsa">
+        LSA Throttle Timers
       </label><br>
 
-      <label>
-        <input type="checkbox" name="fields" value="route-preference">
-        Route Preference
-      </label><br>
-
-      <label>
-        <input type="checkbox" name="fields" value="source-protocol">
-        Source Protocol
-      </label><br>
-
-      <button type="submit">Generate OSPF Template</button>
+      <button type="submit">Generate Cisco OSPF Template</button>
     </form>
   </div>
 </body>

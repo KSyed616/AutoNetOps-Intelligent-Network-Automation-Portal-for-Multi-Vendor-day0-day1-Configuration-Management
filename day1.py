@@ -151,46 +151,62 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
 
 def gen_ospf_temp(fields: List[str]):
     template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-  <routing xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
-    <control-plane-protocols>
-      <control-plane-protocol>
-        <type xmlns:rt="urn:ietf:params:xml:ns:yang:ietf-routing">rt:ospf</type>
-        <name>OSPF</name>
-        <ospf xmlns="urn:ietf:params:xml:ns:yang:ietf-ospf">
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <router>
+      <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+        <id>{{ process_id }}</id>
+        <router-id>{{ router_id }}</router-id>
+        <network>
+          <ip>{{ network_ip }}</ip>
+          <mask>{{ wildcard_mask }}</mask>
+          <area>{{ area }}</area>
+        </network>
 """
 
-    template_str += "          <router-id>{{ router_id }}</router-id>\n"
-
-    if "reference-bandwidth" in fields:
-        template_str += "          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>\n"
-
-    template_str += """          <areas>
-            <area>
-              <identifier>{{ area_id }}</identifier>
+    if "passive-interface" in fields:
+        template_str += """        <passive-interface>
+          <interface>{{ passive_interface }}</interface>
+        </passive-interface>
 """
 
-    if "interface-name" in fields:
-        template_str += """              <interfaces>
-                <interface>
-                  <name>{{ interface_name }}</name>
+    if "auto-cost-reference-bandwidth" in fields:
+        template_str += "        <auto-cost>\n          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>\n        </auto-cost>\n"
+
+    if "default-information-originate" in fields:
+        template_str += "        <default-information>\n          <originate/>\n        </default-information>\n"
+
+    if "log-adjacency-changes" in fields:
+        template_str += "        <log-adjacency-changes/>\n"
+
+    if "timers-throttle-spf" in fields:
+        template_str += """        <timers>
+          <throttle>
+            <spf>
+              <spf-delay>{{ spf_delay }}</spf-delay>
+              <spf-hold>{{ spf_hold }}</spf-hold>
+              <spf-maximum>{{ spf_max }}</spf-maximum>
+            </spf>
+          </throttle>
+        </timers>
 """
 
-        if "interface-network-type" in fields:
-            template_str += "                  <network-type>{{ network_type }}</network-type>\n"
+    if "timers-throttle-lsa" in fields:
+        template_str += """        <timers>
+          <throttle>
+            <lsa>
+              <lsa-start>{{ lsa_start }}</lsa-start>
+              <lsa-hold>{{ lsa_hold }}</lsa-hold>
+              <lsa-maximum>{{ lsa_max }}</lsa-maximum>
+            </lsa>
+          </throttle>
+        </timers>
+"""
 
-        if "interface-passive" in fields:
-            template_str += "                  <passive>{{ passive }}</passive>\n"
-
-        template_str += "                </interface>\n              </interfaces>\n"
-
-    template_str += """            </area>
-                                  </areas>
-                                </ospf>
-                              </control-plane-protocol>
-                            </control-plane-protocols>
-                          </routing>
-                        </config>
-                        """
+    template_str += """      </ospf>
+    </router>
+  </native>
+</config>
+"""
 
     output_dir = "configurations/generated"
     os.makedirs(output_dir, exist_ok=True)

@@ -13,34 +13,49 @@
       <input type="hidden" name="device_id" value="{{ device_id }}">
 
       {% for field in fields %}
-        {% if field == "router_id" %}
+        {% if field == "process-id" %}
+          <label>OSPF Process ID:</label>
+          <input type="number" name="process_id" min="1" required><br>
+
+        {% elif field == "router-id" %}
           <label>Router ID:</label>
-          <input type="text" name="router_id" placeholder="e.g. 1.1.1.1"><br>
+          <input type="text" name="router_id" placeholder="e.g. 1.1.1.1" required><br>
 
-        {% elif field == "reference_bandwidth" %}
-          <label>Reference Bandwidth (Mbps):</label>
-          <input type="number" name="reference_bandwidth" min="1"><br>
+        {% elif field == "network-ip" %}
+          <label>Network IP:</label>
+          <input type="text" name="network_ip" placeholder="e.g. 192.168.1.0" required><br>
 
-        {% elif field == "area_id" %}
-          <label>OSPF Area ID:</label>
-          <input type="text" name="area_id" placeholder="e.g. 0.0.0.0 or 0"><br>
+        {% elif field == "wildcard-mask" %}
+          <label>Wildcard Mask:</label>
+          <input type="text" name="wildcard_mask" placeholder="e.g. 0.0.0.255" required><br>
 
-        {% elif field == "interface_name" %}
-          <label>Interface Name:</label>
-          <input type="text" name="interface_name"><br>
+        {% elif field == "area" %}
+          <label>Area:</label>
+          <input type="text" name="area" placeholder="e.g. 0 or 0.0.0.0" required><br>
 
-        {% elif field == "network_type" %}
-          <label>Network Type:</label>
-          <select name="network_type">
-            <option value="broadcast">broadcast</option>
-            <option value="non_broadcast">non-broadcast</option>
-            <option value="point_to_point">point-to-point</option>
-            <option value="point_to_multipoint">point-to-multipoint</option>
-          </select><br>
-
-        {% elif field == "passive" %}
+        {% elif field == "passive-interface" %}
           <label>Passive Interface:</label>
-          <input type="checkbox" name="passive"><br>
+          <input type="text" name="passive_interface" placeholder="e.g. GigabitEthernet1"><br>
+
+        {% elif field == "auto-cost-reference-bandwidth" %}
+          <label>Reference Bandwidth (Mbps):</label>
+          <input type="number" name="auto_cost_reference_bandwidth" min="1"><br>
+
+        {% elif field == "default-information-originate" %}
+          <label>Originate Default Route:</label>
+          <input type="checkbox" name="default_information_originate"><br>
+
+        {% elif field == "log-adjacency-changes" %}
+          <label>Log Adjacency Changes:</label>
+          <input type="checkbox" name="log_adjacency_changes"><br>
+
+        {% elif field == "timers-throttle-spf" %}
+          <label>SPF Throttle Timers:</label>
+          <input type="text" name="timers_throttle_spf" placeholder="e.g. 50 200 5000"><br>
+
+        {% elif field == "timers-throttle-lsa" %}
+          <label>LSA Throttle Timers:</label>
+          <input type="text" name="timers_throttle_lsa" placeholder="e.g. 50 200 5000"><br>
         {% endif %}
       {% endfor %}
 

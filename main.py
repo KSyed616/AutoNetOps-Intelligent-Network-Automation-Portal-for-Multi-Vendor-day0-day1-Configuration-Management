@@ -283,45 +283,47 @@ async def config_ospf(request: Request):
     form = await request.form()
 
     context = {
+        "process_id": form["process_id"],
         "router_id": form["router_id"],
-        "protocol_type": "ietf-ospf:ospfv2"
+        "network_ip": form["network_ip"],
+        "wildcard_mask": form["wildcard_mask"],
+        "area": form["area"]
     }
 
-    if "name" in form:
-        context["name"] = form["name"]
+    # Optional Fields
+    if "passive_interface" in form:
+        context["passive_interface"] = form["passive_interface"]
 
-    if "description" in form:
-        context["description"] = form["description"]
+    if "auto_cost_reference_bandwidth" in form:
+        context["auto_cost_reference_bandwidth"] = form["auto_cost_reference_bandwidth"]
 
-    if "interface" in form:
-        context["interface"] = form["interface"]
+    if "default_information_originate" in form:
+        context["default_information_originate"] = "true"
 
-    if "area" in form:
-        context["area"] = form["area"]
+    if "log_adjacency_changes" in form:
+        context["log_adjacency_changes"] = "true"
 
-    if "metric" in form:
-        context["metric"] = form["metric"]
+    if "timers_throttle_spf" in form:
+        context["timers_throttle_spf"] = form["timers_throttle_spf"]
 
-    if "passive" in form:
-        context["passive"] = "true"
-
-    if "network_type" in form:
-        context["network_type"] = form["network_type"]
+    if "timers_throttle_lsa" in form:
+        context["timers_throttle_lsa"] = form["timers_throttle_lsa"]
 
     print("OSPF context:", context)
 
     device_id = int(form["device_id"])
     is_reconfig = True
 
-    validate_resp = validate("ospf_temp.j2", context, "/app/models", "ietf-routing@2018-03-13.yang", is_reconfig)
+    validate_resp = validate(
+        "ospf_temp.j2",
+        context,
+        "/app/models",
+        "Cisco-IOS-XE-native.yang",
+        is_reconfig
+    )
 
     if validate_resp:
-        config_temp = create_temp(
-            "ospf_temp.j2",
-            context,
-            is_reconfig
-        )
-
+        config_temp = create_temp("ospf_temp.j2", context, is_reconfig)
         print("Rendered OSPF Config:\n", config_temp)
         push_config(config_temp, device_id)
 
