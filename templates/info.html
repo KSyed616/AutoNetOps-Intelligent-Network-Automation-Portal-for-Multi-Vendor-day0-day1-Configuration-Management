@@ -20,20 +20,22 @@
         <th>Reference Bandwidth</th>
         <td>{{ ospf_config.reference_bandwidth }}</td>
       </tr>
-      <tr>
-        <th>SPF Timers</th>
-        <td>
-          <table>
-            <tr><th>Delay</th><th>Min Delay</th><th>Max Delay</th></tr>
-            <tr>
-              <td>{{ ospf_config.spf_timers.delay }}</td>
-              <td>{{ ospf_config.spf_timers.min_delay }}</td>
-              <td>{{ ospf_config.spf_timers.max_delay }}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
     </table>
+
+    <h4>SPF Timers</h4>
+    <table>
+      <thead>
+        <tr><th>Delay</th><th>Min Delay</th><th>Max Delay</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ ospf_config.spf_timers.delay }}</td>
+          <td>{{ ospf_config.spf_timers.min_delay }}</td>
+          <td>{{ ospf_config.spf_timers.max_delay }}</td>
+        </tr>
+      </tbody>
+    </table>
+
 
     <br>
 

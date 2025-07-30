@@ -98,14 +98,21 @@ ul li {
     font-weight: bold;
 }
 
-td > table {
+table {
   width: 100%;
-  margin-top: 5px;
   border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-td > table th,
-td > table td {
-  padding: 4px;
+th, td {
+  padding: 10px 25px;
   text-align: center;
+  border: 1px solid #ccc;
 }
+
+th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
