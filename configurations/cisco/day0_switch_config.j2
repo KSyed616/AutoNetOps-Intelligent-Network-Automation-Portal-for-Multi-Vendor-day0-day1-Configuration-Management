@@ -1,12 +1,12 @@
 hostname {{ hostname }}
 
-interface vlan 2
+interface vlan 1
  ip address {{ mgmt_ip }} {{ mgmt_mask }}
  no shutdown
 
 interface GigabitEthernet0/1
  switchport mode access
- switchport access vlan 2
+ switchport access vlan 1
  no shutdown
 
 ip default-gateway {{ default_gw }}
