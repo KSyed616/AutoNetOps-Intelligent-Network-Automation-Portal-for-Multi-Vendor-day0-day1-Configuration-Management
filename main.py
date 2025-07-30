@@ -300,20 +300,27 @@ async def config_ospf(request: Request):
     if "passive_interface" in form:
         context["passive_interface"] = form["passive_interface"]
 
-    if "reference_bandwidth" in form:
-        context["reference_bandwidth"] = form["reference_bandwidth"]
+    if "auto_cost_reference_bandwidth" in form:
+        context["reference_bandwidth"] = form["auto_cost_reference_bandwidth"]
 
     if "default_information_originate" in form:
-        context["default_information_originate"] = "true"
+        context["default_information"] = "true"
 
     if "log_adjacency_changes" in form:
         context["log_adjacency_changes"] = "true"
 
-    if "timers_throttle_spf" in form:
-        context["timers_throttle_spf"] = form["timers_throttle_spf"]
+    if "spf_delay" in form and "spf_min_delay" in form and "spf_max_delay" in form:
+        context["spf_delay"] = form["spf_delay"]
+        context["spf_min_delay"] = form["spf_min_delay"]
+        context["spf_max_delay"] = form["spf_max_delay"]
 
-    if "timers_throttle_lsa" in form:
-        context["timers_throttle_lsa"] = form["timers_throttle_lsa"]
+    if "lsa_start" in form and "lsa_hold" in form and "lsa_max" in form:
+        context["lsa_start"] = form["lsa_start"]
+        context["lsa_hold"] = form["lsa_hold"]
+        context["lsa_max"] = form["lsa_max"]
+
+    if "compatible_rfc1583" in form:
+        context["compatible_rfc1583"] = "true"
 
     print("OSPF context:", context)
 
@@ -332,10 +339,12 @@ async def config_ospf(request: Request):
 
     config_temp = create_temp("ospf_temp.j2", context, is_reconfig)
     int_ospf_temp = create_temp("ospf_int_config.j2", context_int, is_reconfig)
+
     print("Rendered OSPF Config:\n", config_temp)
     print("Rendered int Config:\n", int_ospf_temp)
-    # push_config(config_temp, device_id)
-    push_config(int_ospf_temp, device_id)
+
+    push_config(config_temp, device_id)
+    # push_config(int_ospf_temp, device_id)
 
     return RedirectResponse("/dashboard", status_code=303)
 

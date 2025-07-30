@@ -11,22 +11,22 @@
       <h3>Cisco IOS-XE OSPF Configuration Fields</h3>
 
       <label>
-        <input type="checkbox" name="fields" value="process-id" checked disabled>
+        <input type="checkbox" name="fields" value="process_id" checked disabled>
         OSPF Process ID (mandatory)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="router-id" checked disabled>
+        <input type="checkbox" name="fields" value="router_id" checked disabled>
         Router ID (mandatory)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="network-ip" checked disabled>
+        <input type="checkbox" name="fields" value="network_ip" checked disabled>
         Network IP (mandatory)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="wildcard-mask" checked disabled>
+        <input type="checkbox" name="fields" value="wildcard_mask" checked disabled>
         Wildcard Mask (mandatory)
       </label><br>
 
@@ -38,33 +38,38 @@
       <h4>Optional OSPF Fields</h4>
 
       <label>
-        <input type="checkbox" name="fields" value="passive-interface">
+        <input type="checkbox" name="fields" value="passive_interface">
         Passive Interface
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="auto-cost-reference-bandwidth">
-        Reference Bandwidth
+        <input type="checkbox" name="fields" value="auto_cost_reference_bandwidth">
+        Reference Bandwidth (auto-cost)
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="default-information-originate">
-        Originate Default Route
-      </label><br>
-
-      <label>
-        <input type="checkbox" name="fields" value="log-adjacency-changes">
-        Log Adjacency Changes
-      </label><br>
-
-      <label>
-        <input type="checkbox" name="fields" value="timers-throttle-spf">
+        <input type="checkbox" name="fields" value="timers_throttle_spf">
         SPF Throttle Timers
       </label><br>
 
       <label>
-        <input type="checkbox" name="fields" value="timers-throttle-lsa">
+        <input type="checkbox" name="fields" value="timers_throttle_lsa">
         LSA Throttle Timers
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="default_information_originate">
+        Originate Default Route
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="log_adjacency_changes">
+        Log Adjacency Changes
+      </label><br>
+
+      <label>
+        <input type="checkbox" name="fields" value="compatible_rfc1583">
+        RFC1583 Compatibility
       </label><br>
 
       <button type="submit">Generate Cisco OSPF Template</button>

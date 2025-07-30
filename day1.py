@@ -153,76 +153,67 @@ def gen_ospf_temp(fields: List[str]):
     template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
     <router>
-      <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-        <id>{{ process_id }}</id>
-        <router-id>{{ router_id }}</router-id>
-        <network>
-          <ip>{{ network_ip }}</ip>
-          <mask>{{ wildcard_mask }}</mask>
-          <area>{{ area }}</area>
-        </network>
-"""
-
-    if "passive-interface" in fields:
-        template_str += """        {% if passive_interface %}
-        <passive-interface>
-          <interface>{{ passive_interface }}</interface>
-        </passive-interface>
-        {% endif %}
-"""
-
-    if "auto-cost-reference-bandwidth" in fields:
-        template_str += """        {% if reference_bandwidth %}
-        <auto-cost>
-          <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
-        </auto-cost>
-        {% endif %}
-"""
-
-    if "default-information-originate" in fields:
-        template_str += """        {% if default_information %}
-        <default-information>
-          <originate/>
-        </default-information>
-        {% endif %}
-"""
-
-    if "log-adjacency-changes" in fields:
-        template_str += """        {% if log_adjacency_changes %}
-        <log-adjacency-changes/>
-        {% endif %}
-"""
-
-    if "timers-throttle-spf" in fields:
-        template_str += """        {% if spf_delay and spf_hold and spf_max %}
-        <timers>
-          <throttle>
-            <spf>
-              <spf-delay>{{ spf_delay }}</spf-delay>
-              <spf-hold>{{ spf_hold }}</spf-hold>
-              <spf-maximum>{{ spf_max }}</spf-maximum>
-            </spf>
-          </throttle>
-        </timers>
-        {% endif %}
-"""
-
-    if "timers-throttle-lsa" in fields:
-        template_str += """        {% if lsa_start and lsa_hold and lsa_max %}
-        <timers>
-          <throttle>
-            <lsa>
-              <lsa-start>{{ lsa_start }}</lsa-start>
-              <lsa-hold>{{ lsa_hold }}</lsa-hold>
-              <lsa-maximum>{{ lsa_max }}</lsa-maximum>
-            </lsa>
-          </throttle>
-        </timers>
-        {% endif %}
-"""
-
-    template_str += """      </ospf>
+      <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+        <ospf>
+          <process-id>
+            <id>{{ process_id }}</id>
+            <network>
+              <ip>{{ network_ip }}</ip>
+              <wildcard>{{ wildcard_mask }}</wildcard>
+              <area>{{ area }}</area>
+            </network>
+          </process-id>
+        </ospf>
+      </router-ospf>
     </router>
+
+    <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+      <id>{{ process_id }}</id>
+"""
+
+    if "auto_cost_reference_bandwidth" in fields:
+        template_str += """      {% if reference_bandwidth %}
+      <auto-cost>
+        <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
+      </auto-cost>
+      {% endif %}
+"""
+
+    if "timers_throttle_spf" in fields:
+        template_str += """      {% if spf_delay and spf_min_delay and spf_max_delay %}
+      <timers>
+        <throttle>
+          <spf>
+            <delay>{{ spf_delay }}</delay>
+            <min-delay>{{ spf_min_delay }}</min-delay>
+            <max-delay>{{ spf_max_delay }}</max-delay>
+          </spf>
+        </throttle>
+      </timers>
+      {% endif %}
+"""
+
+    if "timers_throttle_lsa" in fields:
+        template_str += """      {% if lsa_start and lsa_hold and lsa_max %}
+      <timers>
+        <throttle>
+          <lsa>
+            <start>{{ lsa_start }}</start>
+            <hold>{{ lsa_hold }}</hold>
+            <maximum>{{ lsa_max }}</maximum>
+          </lsa>
+        </throttle>
+      </timers>
+      {% endif %}
+"""
+
+    if "compatible_rfc1583" in fields:
+        template_str += """      <compatible>
+        <rfc1583/>
+      </compatible>
+"""
+
+    template_str += """    </ospf>
   </native>
 </config>
 """

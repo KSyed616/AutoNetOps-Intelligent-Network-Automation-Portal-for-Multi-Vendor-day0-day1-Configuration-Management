@@ -37,9 +37,9 @@
           <label>Passive Interface:</label>
           <input type="text" name="passive_interface" placeholder="e.g. GigabitEthernet1"><br>
 
-        {% elif field == "reference_bandwidth" %}
+        {% elif field == "auto_cost_reference_bandwidth" %}
           <label>Reference Bandwidth (Mbps):</label>
-          <input type="number" name="reference_bandwidth" min="1"><br>
+          <input type="number" name="auto_cost_reference_bandwidth" min="1"><br>
 
         {% elif field == "default_information_originate" %}
           <label>Originate Default Route:</label>
@@ -56,14 +56,18 @@
         {% elif field == "timers_throttle_lsa" %}
           <label>LSA Throttle Timers:</label>
           <input type="text" name="timers_throttle_lsa" placeholder="e.g. 50 200 5000"><br>
+
+        {% elif field == "compatible_rfc1583" %}
+          <label>RFC1583 Compatibility:</label>
+          <input type="checkbox" name="compatible_rfc1583"><br>
         {% endif %}
       {% endfor %}
 
       <label>Interface type:</label>
-          <input type="text" name="type" placeholder="Gigabit" required><br>
+      <input type="text" name="type" placeholder="Gigabit" required><br>
 
       <label>Interface Number:</label>
-          <input type="text" name="number" placeholder="1" required><br>
+      <input type="text" name="number" placeholder="1" required><br>
 
       <button type="submit">Submit OSPF Configuration</button>
     </form>
