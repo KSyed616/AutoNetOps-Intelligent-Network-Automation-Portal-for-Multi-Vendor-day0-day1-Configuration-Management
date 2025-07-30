@@ -1,3 +1,4 @@
+import json
 import os
 
 import mysql.connector
@@ -30,28 +31,27 @@ def db_derivation(device_id: int):
 
 def get_ospf_config(device_id):
     device = db_derivation(device_id)
+
+    # You can remove the filter entirely OR use native as a broad root filter
     filter_xml = """
-      <filter>
-        <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
-          <router>
-            <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"/>
-          </router>
-        </native>
-      </filter>
-    """
+        <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"/>
+        """
 
     with manager.connect(
             host=device["host"],
             port=device["port"],
             username=device["username"],
             password=device["password"],
-            hostkey_verify=False,
-            device_params={'name': 'csr'},
-            allow_agent=False,
-            look_for_keys=False
+            hostkey_verify=False
     ) as m:
-        ospf_config = m.get_config(source="running", filter=filter_xml)
-        return etree.tostring(ospf_config.data, pretty_print=True).decode()
+        response = m.get_config(source='running', filter=("subtree", filter_xml))
+        data = xmltodict.parse(response.xml)
+
+        try:
+            native_config = data['rpc-reply']['data']['native']
+            print(json.dumps(native_config, indent=2))
+        except KeyError:
+            print("No configuration data found under native.")
 
 
 def get_all_interface_ips(device_id):
