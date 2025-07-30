@@ -288,15 +288,23 @@ async def config_int(request: Request):
 async def config_ospf(request: Request):
     form = await request.form()
 
+    network_ips = form.getlist("network_ip")
+    wildcard_masks = form.getlist("wildcard_mask")
+    areas = form.getlist("area")
+
+    networks = []
+    for ip, mask, area in zip(network_ips, wildcard_masks, areas):
+        if ip and mask and area:
+            networks.append({
+                "ip": ip,
+                "wildcard": mask,
+                "area": area
+            })
+
     context = {
         "process_id": form["process_id"],
-        "network_ip": form["network_ip"],
-        "wildcard_mask": form["wildcard_mask"],
-        "area": form["area"]
+        "networks": networks,
     }
-
-    if "passive_interface" in form:
-        context["passive_interface"] = form["passive_interface"]
 
     if "auto_cost_reference_bandwidth" in form:
         context["reference_bandwidth"] = form["auto_cost_reference_bandwidth"]
@@ -330,7 +338,6 @@ async def config_ospf(request: Request):
     print("Rendered OSPF Config:\n", config_temp)
 
     push_config(config_temp, device_id)
-    # push_config(int_ospf_temp, device_id)
 
     return RedirectResponse("/dashboard", status_code=303)
 

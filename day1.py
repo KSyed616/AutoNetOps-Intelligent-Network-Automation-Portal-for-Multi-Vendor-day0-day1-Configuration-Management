@@ -164,24 +164,24 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
 
 def gen_ospf_temp(fields: List[str]):
     template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
-    <router>
-      <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-        <ospf>
-          <process-id>
-            <id>{{ process_id }}</id>
-            <network>
-              <ip>{{ network_ip }}</ip>
-              <wildcard>{{ wildcard_mask }}</wildcard>
-              <area>{{ area }}</area>
-            </network>
-          </process-id>
-        </ospf>
-      </router-ospf>
-    </router>
-"""
-
-    # Start optional OSPF block only if any of these are present
+      <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <router>
+          <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+            <ospf>
+              <process-id>
+                <id>{{ process_id }}</id>
+                {% for net in networks %}
+                <network>
+                  <ip>{{ net.ip }}</ip>
+                  <wildcard>{{ net.wildcard }}</wildcard>
+                  <area>{{ net.area }}</area>
+                </network>
+                {% endfor %}
+              </process-id>
+            </ospf>
+          </router-ospf>
+        </router>
+    """
     template_str += """
     {% if reference_bandwidth or spf_delay or spf_min_delay or spf_max_delay or lsa_start or lsa_hold or lsa_max or compatible_rfc1583 %}
     <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
@@ -232,7 +232,6 @@ def gen_ospf_temp(fields: List[str]):
       {% endif %}
 """
 
-    # Close the optional ospf block and native
     template_str += """    </ospf>
     {% endif %}
   </native>

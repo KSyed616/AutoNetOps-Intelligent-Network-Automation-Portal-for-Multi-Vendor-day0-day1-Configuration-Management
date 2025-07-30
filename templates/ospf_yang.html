@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <title>Configure OSPF</title>
   <link rel="stylesheet" href="/static/style.css" />
+  <script>
+    function addNetworkBlock() {
+      const container = document.getElementById("network-container");
+      const index = container.children.length;
+
+      const block = document.createElement("div");
+      block.classList.add("network-block");
+      block.innerHTML = `
+        <hr>
+        <h4>OSPF Network #${index + 1}</h4>
+        <label>Network IP:</label>
+        <input type="text" name="network_ip" placeholder="e.g. 192.168.1.0" required><br>
+
+        <label>Wildcard Mask:</label>
+        <input type="text" name="wildcard_mask" placeholder="e.g. 0.0.0.255" required><br>
+
+        <label>Area:</label>
+        <input type="text" name="area" placeholder="e.g. 0 or 0.0.0.0" required><br>
+      `;
+      container.appendChild(block);
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -12,6 +34,7 @@
     <form method="POST" action="/day1/ospf/config">
       <input type="hidden" name="device_id" value="{{ device_id }}">
 
+      <!-- Static Fields -->
       {% for field in fields %}
         {% if field == "process_id" %}
           <label>OSPF Process ID:</label>
@@ -20,45 +43,57 @@
         {% elif field == "router_id" %}
           <label>Router ID:</label>
           <input type="text" name="router_id" placeholder="e.g. 1.1.1.1" required><br>
-
-        {% elif field == "network_ip" %}
-          <label>Network IP:</label>
-          <input type="text" name="network_ip" placeholder="e.g. 192.168.1.0" required><br>
-
-        {% elif field == "wildcard_mask" %}
-          <label>Wildcard Mask:</label>
-          <input type="text" name="wildcard_mask" placeholder="e.g. 0.0.0.255" required><br>
-
-        {% elif field == "area" %}
-          <label>Area:</label>
-          <input type="text" name="area" placeholder="e.g. 0 or 0.0.0.0" required><br>
-
-        {% elif field == "reference_bandwidth" %}
-          <label>Reference Bandwidth (Mbps):</label>
-          <input type="number" name="auto_cost_reference_bandwidth" min="1"><br>
-
-        {% elif field == "default_information_originate" %}
-          <label>Originate Default Route:</label>
-          <input type="checkbox" name="default_information_originate"><br>
-
-        {% elif field == "log_adjacency_changes" %}
-          <label>Log Adjacency Changes:</label>
-          <input type="checkbox" name="log_adjacency_changes"><br>
-
-        {% elif field == "timers_throttle_spf" %}
-          <label>SPF Throttle Timers:</label>
-          <input type="text" name="timers_throttle_spf" placeholder="e.g. 50 200 5000"><br>
-
-        {% elif field == "timers_throttle_lsa" %}
-          <label>LSA Throttle Timers:</label>
-          <input type="text" name="timers_throttle_lsa" placeholder="e.g. 50 200 5000"><br>
-
-        {% elif field == "compatible_rfc1583" %}
-          <label>RFC1583 Compatibility:</label>
-          <input type="checkbox" name="compatible_rfc1583"><br>
         {% endif %}
       {% endfor %}
 
+      <h3>OSPF Networks</h3>
+      <div id="network-container">
+        <div class="network-block">
+          <h4>OSPF Network #1</h4>
+          <label>Network IP:</label>
+          <input type="text" name="network_ip" placeholder="e.g. 192.168.1.0" required><br>
+
+          <label>Wildcard Mask:</label>
+          <input type="text" name="wildcard_mask" placeholder="e.g. 0.0.0.255" required><br>
+
+          <label>Area:</label>
+          <input type="text" name="area" placeholder="e.g. 0 or 0.0.0.0" required><br>
+        </div>
+      </div>
+
+      <button type="button" onclick="addNetworkBlock()">➕ Add Network</button>
+      <br><br>
+
+      {% for field in fields %}
+        {% if field not in ["process_id", "router_id", "network_ip", "wildcard_mask", "area"] %}
+          {% if field == "reference_bandwidth" %}
+            <label>Reference Bandwidth (Mbps):</label>
+            <input type="number" name="auto_cost_reference_bandwidth" min="1"><br>
+
+          {% elif field == "default_information_originate" %}
+            <label>Originate Default Route:</label>
+            <input type="checkbox" name="default_information_originate"><br>
+
+          {% elif field == "log_adjacency_changes" %}
+            <label>Log Adjacency Changes:</label>
+            <input type="checkbox" name="log_adjacency_changes"><br>
+
+          {% elif field == "timers_throttle_spf" %}
+            <label>SPF Throttle Timers:</label>
+            <input type="text" name="timers_throttle_spf" placeholder="e.g. 50 200 5000"><br>
+
+          {% elif field == "timers_throttle_lsa" %}
+            <label>LSA Throttle Timers:</label>
+            <input type="text" name="timers_throttle_lsa" placeholder="e.g. 50 200 5000"><br>
+
+          {% elif field == "compatible_rfc1583" %}
+            <label>RFC1583 Compatibility:</label>
+            <input type="checkbox" name="compatible_rfc1583"><br>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      <br>
       <button type="submit">Submit OSPF Configuration</button>
     </form>
   </div>
