@@ -41,11 +41,11 @@ def day1_hello(device_id: int):
     """
 
     with manager.connect(
-        host=device["host"],
-        port=device["port"],
-        username=device["username"],
-        password=device["password"],
-        hostkey_verify=False
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
     ) as m:
         # Request full config under /native
         response = m.get_config(source='running', filter=("subtree", filter_xml))
@@ -56,7 +56,6 @@ def day1_hello(device_id: int):
             print(json.dumps(native_config, indent=2))
         except KeyError:
             print("No configuration data found under native.")
-
 
 
 def get_interfaces(device_id: int):
@@ -198,9 +197,9 @@ def gen_ospf_temp(fields: List[str]):
       <timers>
         <throttle>
           <spf>
-            <delay>{{ spf_delay }}</delay>
-            <min-delay>{{ spf_min_delay }}</min-delay>
-            <max-delay>{{ spf_max_delay }}</max-delay>
+            {% if spf_delay %}<delay>{{ spf_delay }}</delay>{% endif %}
+            {% if spf_min_delay %}<min-delay>{{ spf_min_delay }}</min-delay>{% endif %}
+            {% if spf_max_delay %}<max-delay>{{ spf_max_delay }}</max-delay>{% endif %}
           </spf>
         </throttle>
       </timers>
@@ -212,9 +211,9 @@ def gen_ospf_temp(fields: List[str]):
       <timers>
         <throttle>
           <lsa>
-            <start>{{ lsa_start }}</start>
-            <hold>{{ lsa_hold }}</hold>
-            <maximum>{{ lsa_max }}</maximum>
+            {% if lsa_start %}<start>{{ lsa_start }}</start>{% endif %}
+            {% if lsa_hold %}<hold>{{ lsa_hold }}</hold>{% endif %}
+            {% if lsa_max %}<maximum>{{ lsa_max }}</maximum>{% endif %}
           </lsa>
         </throttle>
       </timers>
@@ -222,9 +221,11 @@ def gen_ospf_temp(fields: List[str]):
 """
 
     if "compatible_rfc1583" in fields:
-        template_str += """      <compatible>
+        template_str += """      {% if compatible_rfc1583 %}
+      <compatible>
         <rfc1583/>
       </compatible>
+      {% endif %}
 """
 
     template_str += """    </ospf>
@@ -356,11 +357,11 @@ def delete_int(device_id, interface_name):
     device = db_derivation(device_id)
 
     with manager.connect(
-        host=device["host"],
-        port=device["port"],
-        username=device["username"],
-        password=device["password"],
-        hostkey_verify=False
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
     ) as mgr:
         print("omt", interface_name)
         ip_info = get_interface_ip(device_id, interface_name)
@@ -391,4 +392,3 @@ def delete_int(device_id, interface_name):
         print(delete_config)
         response = mgr.edit_config(target='running', config=delete_config, default_operation='none')
         print(response)
-
