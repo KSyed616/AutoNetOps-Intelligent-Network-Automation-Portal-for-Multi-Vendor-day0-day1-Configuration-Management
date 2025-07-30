@@ -164,76 +164,70 @@ def gen_int_temp(fields: List[str], ipv4_prefix_option: str):
 
 def gen_ospf_temp(fields: List[str]):
     template_str = """<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-      <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
-        <router>
-          <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-            <ospf>
-              <process-id>
-                <id>{{ process_id }}</id>
-                {% for net in networks %}
-                <network>
-                  <ip>{{ net.ip }}</ip>
-                  <wildcard>{{ net.wildcard }}</wildcard>
-                  <area>{{ net.area }}</area>
-                </network>
-                {% endfor %}
-              </process-id>
-            </ospf>
-          </router-ospf>
-        </router>
-    """
-    template_str += """
-    {% if reference_bandwidth or spf_delay or spf_min_delay or spf_max_delay or lsa_start or lsa_hold or lsa_max or compatible_rfc1583 %}
-    <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-      <id>{{ process_id }}</id>
+  <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <router>
+      <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+        <ospf>
+          <process-id>
+            <id>{{ process_id }}</id>
+            {% for net in networks %}
+            <network>
+              <ip>{{ net.ip }}</ip>
+              <wildcard>{{ net.wildcard }}</wildcard>
+              <area>{{ net.area }}</area>
+            </network>
+            {% endfor %}
+
 """
 
     if "auto_cost_reference_bandwidth" in fields:
-        template_str += """      {% if reference_bandwidth %}
-      <auto-cost>
-        <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
-      </auto-cost>
-      {% endif %}
+        template_str += """            {% if reference_bandwidth %}
+            <auto-cost>
+              <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
+            </auto-cost>
+            {% endif %}
 """
 
     if "timers_throttle_spf" in fields:
-        template_str += """      {% if spf_delay and spf_min_delay and spf_max_delay %}
-      <timers>
-        <throttle>
-          <spf>
-            {% if spf_delay %}<delay>{{ spf_delay }}</delay>{% endif %}
-            {% if spf_min_delay %}<min-delay>{{ spf_min_delay }}</min-delay>{% endif %}
-            {% if spf_max_delay %}<max-delay>{{ spf_max_delay }}</max-delay>{% endif %}
-          </spf>
-        </throttle>
-      </timers>
-      {% endif %}
+        template_str += """            {% if spf_delay and spf_min_delay and spf_max_delay %}
+            <timers>
+              <throttle>
+                <spf>
+                  {% if spf_delay %}<delay>{{ spf_delay }}</delay>{% endif %}
+                  {% if spf_min_delay %}<min-delay>{{ spf_min_delay }}</min-delay>{% endif %}
+                  {% if spf_max_delay %}<max-delay>{{ spf_max_delay }}</max-delay>{% endif %}
+                </spf>
+              </throttle>
+            </timers>
+            {% endif %}
 """
 
     if "timers_throttle_lsa" in fields:
-        template_str += """      {% if lsa_start and lsa_hold and lsa_max %}
-      <timers>
-        <throttle>
-          <lsa>
-            {% if lsa_start %}<start>{{ lsa_start }}</start>{% endif %}
-            {% if lsa_hold %}<hold>{{ lsa_hold }}</hold>{% endif %}
-            {% if lsa_max %}<maximum>{{ lsa_max }}</maximum>{% endif %}
-          </lsa>
-        </throttle>
-      </timers>
-      {% endif %}
+        template_str += """            {% if lsa_start and lsa_hold and lsa_max %}
+            <timers>
+              <throttle>
+                <lsa>
+                  {% if lsa_start %}<start>{{ lsa_start }}</start>{% endif %}
+                  {% if lsa_hold %}<hold>{{ lsa_hold }}</hold>{% endif %}
+                  {% if lsa_max %}<maximum>{{ lsa_max }}</maximum>{% endif %}
+                </lsa>
+              </throttle>
+            </timers>
+            {% endif %}
 """
 
     if "compatible_rfc1583" in fields:
-        template_str += """      {% if compatible_rfc1583 %}
-      <compatible>
-        <rfc1583/>
-      </compatible>
-      {% endif %}
+        template_str += """            {% if compatible_rfc1583 %}
+            <compatible>
+              <rfc1583/>
+            </compatible>
+            {% endif %}
 """
 
-    template_str += """    </ospf>
-    {% endif %}
+    template_str += """          </process-id>
+        </ospf>
+      </router-ospf>
+    </router>
   </native>
 </config>
 """
