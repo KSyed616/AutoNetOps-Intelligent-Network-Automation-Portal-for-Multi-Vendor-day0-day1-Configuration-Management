@@ -33,11 +33,7 @@
           <label>Area:</label>
           <input type="text" name="area" placeholder="e.g. 0 or 0.0.0.0" required><br>
 
-        {% elif field == "passive_interface" %}
-          <label>Passive Interface:</label>
-          <input type="text" name="passive_interface" placeholder="e.g. GigabitEthernet1"><br>
-
-        {% elif field == "auto_cost_reference_bandwidth" %}
+        {% elif field == "reference_bandwidth" %}
           <label>Reference Bandwidth (Mbps):</label>
           <input type="number" name="auto_cost_reference_bandwidth" min="1"><br>
 

@@ -179,12 +179,17 @@ def gen_ospf_temp(fields: List[str]):
         </ospf>
       </router-ospf>
     </router>
-    
-    """
+"""
+
+    # Start optional OSPF block only if any of these are present
+    template_str += """
+    {% if reference_bandwidth or spf_delay or spf_min_delay or spf_max_delay or lsa_start or lsa_hold or lsa_max or compatible_rfc1583 %}
+    <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+      <id>{{ process_id }}</id>
+"""
 
     if "auto_cost_reference_bandwidth" in fields:
-        template_str += """     <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-      <id>{{ process_id }}</id>     {% if reference_bandwidth %}
+        template_str += """      {% if reference_bandwidth %}
       <auto-cost>
         <reference-bandwidth>{{ reference_bandwidth }}</reference-bandwidth>
       </auto-cost>
@@ -227,7 +232,9 @@ def gen_ospf_temp(fields: List[str]):
       {% endif %}
 """
 
+    # Close the optional ospf block and native
     template_str += """    </ospf>
+    {% endif %}
   </native>
 </config>
 """
