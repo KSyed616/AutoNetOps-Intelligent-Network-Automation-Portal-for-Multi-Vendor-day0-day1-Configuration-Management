@@ -357,7 +357,7 @@ async def config_ospf(request: Request):
     return RedirectResponse("/dashboard", status_code=303)
 
 
-@app.get("info/device", response_class=HTMLResponse)
+@app.get("/info/device", response_class=HTMLResponse)
 def get_info(request: Request, device_id: int = Query(...)):
     ospf_config = get_ospf_config(device_id)
     interface_ips = get_all_interface_ips(device_id)
