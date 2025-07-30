@@ -98,30 +98,14 @@ ul li {
     font-weight: bold;
 }
 
-.config-box {
-      background-color: #f4f4f4;
-      padding: 10px;
-      border-radius: 6px;
-      overflow-x: auto;
-      max-height: 300px;
-      font-family: monospace;
-      font-size: 0.9rem;
-      white-space: pre-wrap;
-    }
+td > table {
+  width: 100%;
+  margin-top: 5px;
+  border-collapse: collapse;
+}
 
-    table {
-      margin: auto;
-      margin-top: 20px;
-      border-collapse: collapse;
-      width: 90%;
-    }
-
-    th, td {
-      padding: 8px 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
-
-    th {
-      background-color: #eaeaea;
-    }
+td > table th,
+td > table td {
+  padding: 4px;
+  text-align: center;
+}

@@ -32,26 +32,49 @@ def db_derivation(device_id: int):
 def get_ospf_config(device_id):
     device = db_derivation(device_id)
 
-    # You can remove the filter entirely OR use native as a broad root filter
     filter_xml = """
         <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"/>
-        """
+    """
 
     with manager.connect(
-            host=device["host"],
-            port=device["port"],
-            username=device["username"],
-            password=device["password"],
-            hostkey_verify=False
+        host=device["host"],
+        port=device["port"],
+        username=device["username"],
+        password=device["password"],
+        hostkey_verify=False
     ) as m:
         response = m.get_config(source='running', filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
 
         try:
             native_config = data['rpc-reply']['data']['native']
-            print(json.dumps(native_config, indent=2))
+            ospf = native_config['router']['router-ospf']['ospf']
+
+            process_id = ospf['process-id']['id']
+            networks = ospf['process-id'].get('network', [])
+            if isinstance(networks, dict):  # Handle single entry case
+                networks = [networks]
+
+            extra_ospf = native_config['router'].get('ospf', {})  # Optional fields
+            ref_bw = extra_ospf.get('auto-cost', {}).get('reference-bandwidth', 'N/A')
+            spf_timers = extra_ospf.get('timers', {}).get('throttle', {}).get('spf', {})
+
+            ospf_data = {
+                "process_id": process_id,
+                "networks": networks,
+                "reference_bandwidth": ref_bw,
+                "spf_timers": {
+                    "delay": spf_timers.get("delay", "N/A"),
+                    "min_delay": spf_timers.get("min-delay", "N/A"),
+                    "max_delay": spf_timers.get("max-delay", "N/A")
+                }
+            }
+
+            return ospf_data
+
         except KeyError:
-            print("No configuration data found under native.")
+            print("No OSPF configuration found.")
+            return None
 
 
 def get_all_interface_ips(device_id):

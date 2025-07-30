@@ -10,7 +10,44 @@
     <h2>Device Configuration Details</h2>
 
     <h3>OSPF Configuration</h3>
-    <pre>{{ ospf_config }}</pre>
+
+    <table>
+      <tr>
+        <th>Process ID</th>
+        <td>{{ ospf_config.process_id }}</td>
+      </tr>
+      <tr>
+        <th>Reference Bandwidth</th>
+        <td>{{ ospf_config.reference_bandwidth }}</td>
+      </tr>
+      <tr>
+        <th>SPF Timers</th>
+        <td>
+          <table>
+            <tr><th>Delay</th><th>Min Delay</th><th>Max Delay</th></tr>
+            <tr>
+              <td>{{ ospf_config.spf_timers.delay }}</td>
+              <td>{{ ospf_config.spf_timers.min_delay }}</td>
+              <td>{{ ospf_config.spf_timers.max_delay }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <br>
+
+    <h4>Networks</h4>
+    <table>
+      <tr><th>IP</th><th>Wildcard</th><th>Area</th></tr>
+      {% for net in ospf_config.networks %}
+        <tr>
+          <td>{{ net.ip }}</td>
+          <td>{{ net.wildcard }}</td>
+          <td>{{ net.area }}</td>
+        </tr>
+      {% endfor %}
+    </table>
 
     <h3>Interface IPs</h3>
     {% if interface_ips %}
