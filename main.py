@@ -8,9 +8,9 @@ from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
-    delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf
+    delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf, db_derivation
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
-from device_info import get_all_interface_ips, get_ospf_config
+from device_info import get_all_interface_ips, get_ospf_config, routing_info
 from schema import Device
 
 app = FastAPI()
@@ -357,6 +357,17 @@ async def config_ospf(request: Request):
     return RedirectResponse("/dashboard", status_code=303)
 
 
+
+@app.get("/info/menu", response_class=HTMLResponse)
+def info_menu(request: Request, device_id: int = Query(...)):
+
+    return templates.TemplateResponse("info_menu.html", {
+        "request": request,
+        "device_id": device_id
+    })
+
+
+
 @app.get("/info/device", response_class=HTMLResponse)
 def get_info(request: Request, device_id: int = Query(...)):
     ospf_config = get_ospf_config(device_id)
@@ -366,6 +377,18 @@ def get_info(request: Request, device_id: int = Query(...)):
         "request": request,
         "ospf_config": ospf_config,
         "interface_ips": interface_ips
+    })
+
+
+@app.get("/info/routing", response_class=HTMLResponse)
+def get_info(request: Request, device_id: int = Query(...)):
+    device = db_derivation(device_id)
+    routes = routing_info(device_id)
+
+    return templates.TemplateResponse("routes.html", {
+        "request": request,
+        "device": device,
+        "routes": routes
     })
 
 

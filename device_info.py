@@ -6,27 +6,7 @@ import xmltodict
 from ncclient import manager
 from lxml import etree
 
-
-def db_derivation(device_id: int):
-    conn = mysql.connector.connect(
-        host=os.getenv("DB_HOST", "127.0.0.1"),
-        port=int(os.getenv("DB_PORT", 3306)),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "password"),
-        database=os.getenv("DB_NAME", "AutoNetOps")
-    )
-    db_cursor = conn.cursor()
-    db_cursor.execute("SELECT * FROM device WHERE device_id = %s", (device_id,))
-    row = db_cursor.fetchone()
-
-    device = {
-        "host": row[2],
-        "port": row[4],
-        "username": row[5],
-        "password": row[6]
-    }
-
-    return device
+from day1 import db_derivation
 
 
 def get_ospf_config(device_id):
@@ -125,3 +105,78 @@ def get_all_interface_ips(device_id):
                 })
 
         return interface_ip_map
+
+
+def routing_info(device_id):
+    device = db_derivation(device_id)
+
+    filter_xml = """
+        <routing-state xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
+            <routing-instance>
+                <name/>
+                <ribs>
+                    <rib>
+                        <name/>
+                        <routes>
+                            <route>
+                                <destination-prefix/>
+                                <route-preference/>
+                                <metric/>
+                                <next-hop>
+                                    <outgoing-interface/>
+                                    <next-hop-address/>
+                                </next-hop>
+                                <source-protocol/>
+                                <active/>
+                            </route>
+                        </routes>
+                    </rib>
+                </ribs>
+            </routing-instance>
+        </routing-state>
+        """
+
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False,
+            device_params={'name': 'iosxe'}
+    ) as m:
+        response = m.get(filter=("subtree", filter_xml))  # Note: get() not get_config()
+        data = xmltodict.parse(response.xml)
+        print(json.dumps(data, indent=2))
+        print( data)
+        routes = parse_routes(data)
+        return routes
+
+
+def parse_routes(data):
+    routes = []
+
+    rib_data = data['rpc-reply']['data']['routing-state']['routing-instance']
+    for instance in rib_data:
+        if 'ribs' not in instance:
+            continue
+        for rib in instance['ribs']['rib']:
+            if 'routes' not in rib or 'route' not in rib['routes']:
+                continue
+            route_entries = rib['routes']['route']
+            if isinstance(route_entries, dict):
+                route_entries = [route_entries]
+
+            for route in route_entries:
+                routes.append({
+                    "prefix": route.get("destination-prefix", "N/A"),
+                    "protocol": (
+                        route.get("source-protocol", {}).get("#text")
+                        if isinstance(route.get("source-protocol"), dict)
+                        else route.get("source-protocol", "N/A")
+                    ),
+                    "metric": route.get("metric", "N/A"),
+                    "preference": route.get("route-preference", "N/A"),
+                    "nexthop": route.get("next-hop", {}).get("next-hop-address", "N/A"),
+                    "interface": route.get("next-hop", {}).get("outgoing-interface", "N/A"),
+                })
+    return routes

@@ -10,7 +10,7 @@
         <h2>Select a Device to view its information</h2>
 
         {% for device in devices %}
-            <form action="/info/device" method="get" style="margin-bottom: 10px;">
+            <form action="/info/menu" method="get" style="margin-bottom: 10px;">
                 <input type="hidden" name="device_id" value="{{ device.device_id }}">
                 <button type="submit">{{ device.hostname }}</button>
             </form>

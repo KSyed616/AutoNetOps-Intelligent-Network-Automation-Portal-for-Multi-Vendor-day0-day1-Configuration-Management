@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Routes</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Routing Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Prefix</th>
+          <th>Protocol</th>
+          <th>Metric</th>
+          <th>Preference</th>
+          <th>Next Hop</th>
+          <th>Interface</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for route in routes %}
+        <tr>
+          <td>{{ route.prefix }}</td>
+          <td>{{ route.protocol }}</td>
+          <td>{{ route.metric }}</td>
+          <td>{{ route.preference }}</td>
+          <td>{{ route.nexthop }}</td>
+          <td>{{ route.interface }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuration Menu</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>What do you want to see?</h2>
+
+    <form method="GET" action="/info/device">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
+      <button type="submit">View Configurations</button>
+    </form>
+    <br>
+
+    <form method="GET" action="/info/routing">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
+      <button type="submit">View Routing Information</button>
+    </form>
+  </div>
+</body>
+</html>
