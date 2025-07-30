@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuration Menu</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Choose Configuration Type</h2>
+
+    <form method="GET" action="/day1/ospf/create">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
+      <button type="submit">Configure OSPF</button>
+    </form>
+    <br>
+
+    <form method="GET" action="/day1/ospf/delete">
+      <input type="hidden" name="device_id" value="{{ device_id }}">
+      <button type="submit">Delete OSPF</button>
+    </form>
+  </div>
+</body>
+</html>

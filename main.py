@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from starlette import status
 
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
-    delete_int, push_config, gen_ospf_temp, get_interface_ip
+    delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from device_info import get_all_interface_ips
 from schema import Device
@@ -168,9 +168,8 @@ def day1_interfaces(request: Request, device_id: int = Query(...)):
     )
 
 
-@app.get("/day1/ospf", response_class=HTMLResponse)
+@app.get("/day1/ospf/create", response_class=HTMLResponse)
 def day1_ospf(request: Request, device_id: int = Query(...)):
-    # day1_hello(device_id)
     fields = get_template_variables("ospf_temp.j2")
     print("fields: ", fields)
 
@@ -179,6 +178,14 @@ def day1_ospf(request: Request, device_id: int = Query(...)):
         "fields": fields,
         "device_id": device_id
     })
+
+
+@app.get("/day1/ospf/delete", response_class=HTMLResponse)
+def day1_ospf(device_id: int = Query(...)):
+
+    delete_ospf(device_id)
+
+    return RedirectResponse("/dashboard")
 
 
 @app.post("/template")

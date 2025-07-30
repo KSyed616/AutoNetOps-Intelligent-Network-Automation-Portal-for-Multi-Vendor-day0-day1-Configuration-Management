@@ -397,3 +397,32 @@ def delete_int(device_id, interface_name):
         print(delete_config)
         response = mgr.edit_config(target='running', config=delete_config, default_operation='none')
         print(response)
+
+
+def delete_ospf(device_id: int):
+
+    device = db_derivation(device_id)
+
+    delete_payload = """
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+        <router>
+          <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
+            <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"
+                  xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+                  nc:operation="delete">
+            </ospf>
+          </router-ospf>
+        </router>
+      </native>
+    </config>
+    """
+
+    with manager.connect(
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
+    ) as m:
+        m.edit_config(target="running", config=delete_payload)
