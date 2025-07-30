@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Device Information</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Device Configuration Details</h2>
+
+    <h3>OSPF Configuration</h3>
+    <pre>{{ ospf_config }}</pre>
+
+    <h3>Interface IPs</h3>
+    {% if interface_ips %}
+      <table>
+        <thead>
+          <tr>
+            <th>Interface</th>
+            <th>IP Address</th>
+            <th>Netmask</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in interface_ips %}
+            <tr>
+              <td>{{ entry.interface }}</td>
+              <td>{{ entry.ip_address }}</td>
+              <td>{{ entry.netmask }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No interface IPs found.</p>
+    {% endif %}
+
+    <br>
+    <a href="/dashboard" class="btn">Back to Dashboard</a>
+  </div>
+</body>
+</html>

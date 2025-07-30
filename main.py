@@ -10,7 +10,7 @@ from starlette import status
 from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
     delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
-from device_info import get_all_interface_ips
+from device_info import get_all_interface_ips, get_ospf_config
 from schema import Device
 
 app = FastAPI()
@@ -66,7 +66,7 @@ def select_day1_devices(request: Request):
 @app.get("/information", response_class=HTMLResponse)
 def select_device_info(request: Request):
     devices = get_day0()
-    return templates.TemplateResponse("day0_devices.html", {"request": request, "devices": devices})
+    return templates.TemplateResponse("device_select.html", {"request": request, "devices": devices})
 
 
 @app.get("/template_menu", response_class=HTMLResponse)
@@ -359,7 +359,14 @@ async def config_ospf(request: Request):
 
 @app.get("info/device", response_class=HTMLResponse)
 def get_info(request: Request, device_id: int = Query(...)):
-    ip_info = get_all_interface_ips(device_id)
+    ospf_config = get_ospf_config(device_id)
+    interface_ips = get_all_interface_ips(device_id)
+
+    return templates.TemplateResponse("info.html", {
+        "request": request,
+        "ospf_config": ospf_config,
+        "interface_ips": interface_ips
+    })
 
 
 if __name__ == "__main__":

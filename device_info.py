@@ -57,7 +57,6 @@ def get_ospf_config(device_id):
 def get_all_interface_ips(device_id):
     device = db_derivation(device_id)
 
-    # Filter to get all interfaces
     filter_xml = """
     <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
     </interfaces>
@@ -79,7 +78,7 @@ def get_all_interface_ips(device_id):
             .get('interface', [])
 
         if not isinstance(interfaces, list):
-            interfaces = [interfaces]  # ensure it's iterable
+            interfaces = [interfaces]
 
         interface_ip_map = []
 
@@ -88,7 +87,6 @@ def get_all_interface_ips(device_id):
 
             ipv4_info = interface.get('ipv4', {}).get('address', {})
 
-            # If multiple IPs are configured (list), handle all
             if isinstance(ipv4_info, list):
                 for ip_entry in ipv4_info:
                     interface_ip_map.append({
@@ -96,7 +94,6 @@ def get_all_interface_ips(device_id):
                         "ip_address": ip_entry.get("ip"),
                         "netmask": ip_entry.get("netmask")
                     })
-            # If only one address is configured (dict)
             elif isinstance(ipv4_info, dict):
                 interface_ip_map.append({
                     "interface": name,
