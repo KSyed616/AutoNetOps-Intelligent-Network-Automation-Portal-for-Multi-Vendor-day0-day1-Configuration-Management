@@ -32,10 +32,10 @@ def get_ospf_config(device_id):
 
             process_id = ospf['process-id']['id']
             networks = ospf['process-id'].get('network', [])
-            if isinstance(networks, dict):  # Handle single entry case
+            if isinstance(networks, dict):
                 networks = [networks]
 
-            extra_ospf = native_config['router'].get('ospf', {})  # Optional fields
+            extra_ospf = native_config['router'].get('ospf', {})
             ref_bw = extra_ospf.get('auto-cost', {}).get('reference-bandwidth', 'N/A')
             spf_timers = extra_ospf.get('timers', {}).get('throttle', {}).get('spf', {})
 
@@ -144,7 +144,7 @@ def routing_info(device_id):
             hostkey_verify=False,
             device_params={'name': 'iosxe'}
     ) as m:
-        response = m.get(filter=("subtree", filter_xml))  # Note: get() not get_config()
+        response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
         print(json.dumps(data, indent=2))
         print( data)

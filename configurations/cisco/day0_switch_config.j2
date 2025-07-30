@@ -1,7 +1,13 @@
 hostname {{ hostname }}
 
-interface vlan 1
-    ip address {{mgmt_ip}} {{ mgmt_mask }}
+interface Vlan1
+ ip address {{ mgmt_ip }} {{ mgmt_mask }}
+ no shutdown
+
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 1
+ no shutdown
 
 ip default-gateway {{ default_gw }}
 
@@ -11,8 +17,8 @@ ip ssh version 2
 
 username {{ username }} privilege 15 secret {{ password }}
 line vty 0 4
-    login local
-    transport input ssh
+ login local
+ transport input ssh
 
 netconf-yang
 restconf
