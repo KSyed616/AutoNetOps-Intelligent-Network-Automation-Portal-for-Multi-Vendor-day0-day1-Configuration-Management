@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import tempfile
@@ -34,15 +35,28 @@ def db_derivation(device_id: int):
 def day1_hello(device_id: int):
     device = db_derivation(device_id)
 
-    with manager.connect(host=device["host"],
-                         port=device["port"],
-                         username=device["username"],
-                         password=device["password"],
-                         hostkey_verify=False,
-                         device_params={"name": "default"},
-                         allow_agent=False,
-                         look_for_keys=False) as m:
-        print("Supported YANG modules via NETCONF capabilities:\n")
+    # You can remove the filter entirely OR use native as a broad root filter
+    filter_xml = """
+    <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"/>
+    """
+
+    with manager.connect(
+        host=device["host"],
+        port=device["port"],
+        username=device["username"],
+        password=device["password"],
+        hostkey_verify=False
+    ) as m:
+        # Request full config under /native
+        response = m.get_config(source='running', filter=("subtree", filter_xml))
+        data = xmltodict.parse(response.xml)
+
+        try:
+            native_config = data['rpc-reply']['data']['native']
+            print(json.dumps(native_config, indent=2))
+        except KeyError:
+            print("No configuration data found under native.")
+
 
 
 def get_interfaces(device_id: int):

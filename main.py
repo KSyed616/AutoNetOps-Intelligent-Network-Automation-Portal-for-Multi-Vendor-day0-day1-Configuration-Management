@@ -160,7 +160,7 @@ def day1_options(request: Request, device_id: int = Form(...)):
 
 @app.get("/day1/interface", response_class=HTMLResponse)
 def day1_interfaces(request: Request, device_id: int = Query(...)):
-    day1_hello(device_id)
+    # day1_hello(device_id)
     interface_data = get_interfaces(device_id)
     return templates.TemplateResponse(
         "interface_config.html",
@@ -170,7 +170,7 @@ def day1_interfaces(request: Request, device_id: int = Query(...)):
 
 @app.get("/day1/ospf", response_class=HTMLResponse)
 def day1_ospf(request: Request, device_id: int = Query(...)):
-    day1_hello(device_id)
+    # day1_hello(device_id)
     fields = get_template_variables("ospf_temp.j2")
     print("fields: ", fields)
 
@@ -290,13 +290,11 @@ async def config_ospf(request: Request):
 
     context = {
         "process_id": form["process_id"],
-        "router_id": form["router_id"],
         "network_ip": form["network_ip"],
         "wildcard_mask": form["wildcard_mask"],
         "area": form["area"]
     }
 
-    # Optional Fields
     if "passive_interface" in form:
         context["passive_interface"] = form["passive_interface"]
 
@@ -324,24 +322,12 @@ async def config_ospf(request: Request):
 
     print("OSPF context:", context)
 
-    context_int = {
-        "type": form["type"],
-        "number": form["number"],
-        "network_type": "point-to-point",
-        "process_id": form["process_id"],
-        "router_id": form["router_id"],
-        "area": form["area"]
-    }
-    print("int context", context_int)
-
     device_id = int(form["device_id"])
     is_reconfig = True
 
     config_temp = create_temp("ospf_temp.j2", context, is_reconfig)
-    int_ospf_temp = create_temp("ospf_int_config.j2", context_int, is_reconfig)
 
     print("Rendered OSPF Config:\n", config_temp)
-    print("Rendered int Config:\n", int_ospf_temp)
 
     push_config(config_temp, device_id)
     # push_config(int_ospf_temp, device_id)
