@@ -110,46 +110,48 @@ def get_all_interface_ips(device_id):
 def routing_info(device_id):
     device = db_derivation(device_id)
 
-    filter_xml = """
-        <routing-state xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
-            <routing-instance>
-                <name/>
-                <ribs>
-                    <rib>
-                        <name/>
-                        <routes>
-                            <route>
-                                <destination-prefix/>
-                                <route-preference/>
-                                <metric/>
-                                <next-hop>
-                                    <outgoing-interface/>
-                                    <next-hop-address/>
-                                </next-hop>
-                                <source-protocol/>
-                                <active/>
-                            </route>
-                        </routes>
-                    </rib>
-                </ribs>
-            </routing-instance>
-        </routing-state>
-        """
+    filter_xml = build_routing_filter()  # dynamic generation
 
     with manager.connect(
-            host=device["host"],
-            port=device["port"],
-            username=device["username"],
-            password=device["password"],
-            hostkey_verify=False,
-            device_params={'name': 'iosxe'}
+        host=device["host"],
+        port=device["port"],
+        username=device["username"],
+        password=device["password"],
+        hostkey_verify=False,
+        device_params={'name': 'iosxe'}
     ) as m:
         response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
         print(json.dumps(data, indent=2))
-        print( data)
         routes = parse_routes(data)
         return routes
+
+
+def build_routing_filter():
+    ns = "urn:ietf:params:xml:ns:yang:ietf-routing"
+    routing_state = etree.Element("routing-state", xmlns=ns)
+    routing_instance = etree.SubElement(routing_state, "routing-instance")
+    etree.SubElement(routing_instance, "name")
+
+    ribs = etree.SubElement(routing_instance, "ribs")
+    rib = etree.SubElement(ribs, "rib")
+    etree.SubElement(rib, "name")
+
+    routes = etree.SubElement(rib, "routes")
+    route = etree.SubElement(routes, "route")
+
+    etree.SubElement(route, "destination-prefix")
+    etree.SubElement(route, "route-preference")
+    etree.SubElement(route, "metric")
+
+    next_hop = etree.SubElement(route, "next-hop")
+    etree.SubElement(next_hop, "outgoing-interface")
+    etree.SubElement(next_hop, "next-hop-address")
+
+    etree.SubElement(route, "source-protocol")
+    etree.SubElement(route, "active")
+
+    return etree.tostring(routing_state).decode()
 
 
 def parse_routes(data):
