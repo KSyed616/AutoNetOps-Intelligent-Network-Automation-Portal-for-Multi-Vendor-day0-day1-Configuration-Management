@@ -1,51 +1,12 @@
-import importlib
 import json
 import os
-import subprocess
-import sys
 
-import pyangbind.lib.pybindJSON as pybindJSON
+import mysql.connector
 import xmltodict
 from ncclient import manager
 from lxml import etree
 
 from day1 import db_derivation
-
-
-def generate_model_binding(model_name: str, yang_dir: str = "models", output_dir: str = "bindings"):
-    yang_file = f"{yang_dir}/{model_name}.yang"
-    output_file = f"{output_dir}/{model_name.replace('-', '_')}.py"
-    module_name = model_name.replace("-", "_")
-
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Step 1: Find pyangbind plugin directory
-    result = subprocess.run(
-        ["python", "-c", "import pyangbind; print(pyangbind.plugin.__path__[0])"],
-        capture_output=True,
-        text=True
-    )
-    plugin_path = result.stdout.strip()
-
-    # Step 2: Generate the binding
-    subprocess.run([
-        "pyang",
-        "--plugindir", plugin_path,
-        "-f", "pybind",
-        "-o", output_file,
-        yang_file
-    ], check=True)
-
-    # Step 3: Dynamically import the generated Python module
-    spec = importlib.util.spec_from_file_location(module_name, output_file)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    spec.loader.exec_module(module)
-
-    # Step 4: Return the top-level model class (usually same as file name)
-    class_name = module_name  # pyangbind uses same name for class
-    model_class = getattr(module, class_name)
-    return model_class
 
 
 def get_ospf_config(device_id):
@@ -56,11 +17,11 @@ def get_ospf_config(device_id):
     """
 
     with manager.connect(
-            host=device["host"],
-            port=device["port"],
-            username=device["username"],
-            password=device["password"],
-            hostkey_verify=False
+        host=device["host"],
+        port=device["port"],
+        username=device["username"],
+        password=device["password"],
+        hostkey_verify=False
     ) as m:
         response = m.get_config(source='running', filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
@@ -149,20 +110,31 @@ def get_all_interface_ips(device_id):
 def routing_info(device_id):
     device = db_derivation(device_id)
 
-    # Step 1: Build model using pyangbind
-    model = generate_model_binding("ietf-routing@2018-03-13")
-
-    # Optional: Create routing-instance and RIB filter fields
-    ri = model.routing_instance.add("default")
-    rib = ri.ribs.rib.add("ipv4-default")
-
-    # Optionally, leave route details blank to pull all
-    route = rib.routes.route.add("0.0.0.0/0")
-
-    # Step 2: Convert model -> JSON -> Dict -> XML string
-    json_data = pybindJSON.dumps(model, mode="ietf")
-    xml_dict = json.loads(json_data)
-    filter_xml = xmltodict.unparse({"routing-state": xml_dict["routing-state"]}, pretty=True)
+    filter_xml = """
+        <routing-state xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
+            <routing-instance>
+                <name/>
+                <ribs>
+                    <rib>
+                        <name/>
+                        <routes>
+                            <route>
+                                <destination-prefix/>
+                                <route-preference/>
+                                <metric/>
+                                <next-hop>
+                                    <outgoing-interface/>
+                                    <next-hop-address/>
+                                </next-hop>
+                                <source-protocol/>
+                                <active/>
+                            </route>
+                        </routes>
+                    </rib>
+                </ribs>
+            </routing-instance>
+        </routing-state>
+        """
 
     with manager.connect(
             host=device["host"],
@@ -175,6 +147,7 @@ def routing_info(device_id):
         response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
         print(json.dumps(data, indent=2))
+        print( data)
         routes = parse_routes(data)
         return routes
 
