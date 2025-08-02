@@ -22,3 +22,11 @@ CREATE TABLE IF NOT EXISTS cmlData (
     token VARCHAR(255),
     lab_id VARCHAR(255)
 );
+
+
+CREATE TABLE IF NOT EXISTS netconf_filters (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    model_name TEXT NOT NULL,
+    filter_payload TEXT NOT NULL,
+    UNIQUE(model_name)
+)

@@ -1,7 +1,11 @@
+import os
+
+import mysql.connector
+from mysql.connector import Error
+
 import openai
 
-
-def generate_netconf_filter(prompt: str, model_name: str) -> str:
+def generate_netconf_filter(prompt: str, model_name: str):
     system_prompt = f"""You are a network automation assistant. Given a request and a YANG model name, generate a 
 NETCONF subtree <filter> XML payload using only that YANG model.
 
@@ -33,5 +37,51 @@ NETCONF subtree <filter> XML payload using only that YANG model.
     print("\n[GPT RESPONSE]:")
     print(result)
 
+    save_filter_to_db(model_name, result)
+
     return result
+
+
+def save_filter_to_db(model_name, filter_payload):
+
+    conn = mysql.connector.connect(
+        host=os.getenv("DB_HOST", "127.0.0.1"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        database=os.getenv("DB_NAME", "AutoNetOps")
+    )
+    db_cursor = conn.cursor()
+    db_cursor.execute("""
+            INSERT IGNORE INTO netconf_filters (model_name, filter_payload)
+            VALUES (%s, %s)
+        """, (model_name, filter_payload))
+    conn.commit()
+    db_cursor.close()
+    conn.close()
+
+
+def get_filter_from_db(model_name):
+    cursor = None
+    conn = mysql.connector.connect(
+        host=os.getenv("DB_HOST", "127.0.0.1"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", "password"),
+        database=os.getenv("DB_NAME", "AutoNetOps")
+    )
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT filter_payload FROM netconf_filters
+            WHERE model_name = %s
+        """, model_name)
+        result = cursor.fetchone()
+        return result[0] if result else None
+    except Error as e:
+        print(f"MySQL Error: {e}")
+        return None
+    finally:
+        cursor.close()
+        conn.close()
 

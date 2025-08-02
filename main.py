@@ -11,7 +11,7 @@ from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variable
     delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf, db_derivation
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from device_info import get_all_interface_ips, get_ospf_config, routing_info
-from openai_imp import generate_netconf_filter
+from openai_imp import generate_netconf_filter, get_filter_from_db
 from schema import Device
 
 app = FastAPI()
@@ -192,7 +192,6 @@ def day1_ospf_create(request: Request, device_id: int = Query(...)):
 @app.get("/day1/ospf/delete", response_class=HTMLResponse)
 def day1_ospf(device_id: int = Query(...)):
     delete_ospf(device_id)
-
     return RedirectResponse("/dashboard")
 
 
@@ -372,18 +371,20 @@ def gpt_info_device(request: Request):
     interface_model = request.query_params.get("interface_model")
 
     responses = {}
-    ospf_config = None
-    interface_ips = None
 
-    if ospf_model:
+    ospf_filter = get_filter_from_db(ospf_model)
+    if not ospf_filter:
         ospf_prompt = f"Generate a NETCONF filter using {ospf_model} to retrieve OSPF configuration."
-        responses["ospf_filter"] = generate_netconf_filter(ospf_prompt, ospf_model)
-        ospf_config = get_ospf_config(device_id, responses["ospf_filter"])
+        ospf_filter = generate_netconf_filter(ospf_prompt, ospf_model)
 
-    if interface_model:
+    ospf_config = get_ospf_config(device_id, ospf_filter)
+
+    interface_filter = get_filter_from_db(interface_model)
+    if not interface_filter:
         intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve interface configuration."
-        responses["interface_filter"] = generate_netconf_filter(intf_prompt, interface_model)
-        interface_ips = get_all_interface_ips(device_id, responses["ospf_filter"])
+        interface_filter = generate_netconf_filter(intf_prompt, interface_model)
+
+    interface_ips = get_all_interface_ips(device_id, interface_filter)
 
     return templates.TemplateResponse("info.html", {
         "request": request,
@@ -393,7 +394,7 @@ def gpt_info_device(request: Request):
 
 
 @app.get("/info/routing", response_class=HTMLResponse)
-def get_info(request: Request, device_id: int = Query(...)):
+def get_info_routing(request: Request, device_id: int = Query(...)):
     device = db_derivation(device_id)
     routes = routing_info(device_id)
 
