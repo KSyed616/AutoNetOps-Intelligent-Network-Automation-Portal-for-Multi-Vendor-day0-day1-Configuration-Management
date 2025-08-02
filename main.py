@@ -376,14 +376,15 @@ def gpt_info_device(request: Request):
     interface_ips = None
 
     if ospf_model:
-        ospf_prompt = f"Generate a NETCONF filter using {ospf_model} to retrieve OSPF configuration."
+        ospf_prompt = f"Generate a NETCONF filter using {ospf_model}  to retrieve router configuration"
         responses["ospf_filter"] = generate_netconf_filter(ospf_prompt, ospf_model)
         ospf_config = get_ospf_config(device_id, responses["ospf_filter"])
+        print(ospf_config)
 
     if interface_model:
-        intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve interface configuration."
+        intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve all interface configuration."
         responses["interface_filter"] = generate_netconf_filter(intf_prompt, interface_model)
-        interface_ips = get_all_interface_ips(device_id, responses["ospf_filter"])
+        interface_ips = get_all_interface_ips(device_id, responses["interface_filter"])
 
     return templates.TemplateResponse("info.html", {
         "request": request,
@@ -392,10 +393,14 @@ def gpt_info_device(request: Request):
     })
 
 
-@app.get("/info/routing", response_class=HTMLResponse)
-def get_info(request: Request, device_id: int = Query(...)):
+@app.get("/gpt/info/routing", response_class=HTMLResponse)
+def gpt_info_routing(request: Request, device_id: int = Query(...), routing_model: str = Query(...)):
     device = db_derivation(device_id)
-    routes = routing_info(device_id)
+
+    route_prompt = f"Generate a NETCONF filter using {routing_model} to retrieve routing information using routing-state as outermost element"
+    response = generate_netconf_filter(route_prompt, routing_model)
+    routes = routing_info(device_id, response)
+    print(routes)
 
     return templates.TemplateResponse("routes.html", {
         "request": request,

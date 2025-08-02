@@ -20,6 +20,7 @@ def get_ospf_config(device_id, filter_xml):
         hostkey_verify=False
     ) as m:
         response = m.get_config(source='running', filter=("subtree", filter_xml))
+        print(response.xml)
         data = xmltodict.parse(response.xml)
 
         try:
@@ -33,17 +34,11 @@ def get_ospf_config(device_id, filter_xml):
 
             extra_ospf = native_config['router'].get('ospf', {})
             ref_bw = extra_ospf.get('auto-cost', {}).get('reference-bandwidth', 'N/A')
-            spf_timers = extra_ospf.get('timers', {}).get('throttle', {}).get('spf', {})
 
             ospf_data = {
                 "process_id": process_id,
                 "networks": networks,
-                "reference_bandwidth": ref_bw,
-                "spf_timers": {
-                    "delay": spf_timers.get("delay", "N/A"),
-                    "min_delay": spf_timers.get("min-delay", "N/A"),
-                    "max_delay": spf_timers.get("max-delay", "N/A")
-                }
+                "reference_bandwidth": ref_bw
             }
 
             return ospf_data
@@ -98,34 +93,8 @@ def get_all_interface_ips(device_id, filter_xml):
         return interface_ip_map
 
 
-def routing_info(device_id):
+def routing_info(device_id, filter_xml):
     device = db_derivation(device_id)
-
-    filter_xml = """
-        <routing-state xmlns="urn:ietf:params:xml:ns:yang:ietf-routing">
-            <routing-instance>
-                <name/>
-                <ribs>
-                    <rib>
-                        <name/>
-                        <routes>
-                            <route>
-                                <destination-prefix/>
-                                <route-preference/>
-                                <metric/>
-                                <next-hop>
-                                    <outgoing-interface/>
-                                    <next-hop-address/>
-                                </next-hop>
-                                <source-protocol/>
-                                <active/>
-                            </route>
-                        </routes>
-                    </rib>
-                </ribs>
-            </routing-instance>
-        </routing-state>
-        """
 
     with manager.connect(
             host=device["host"],
@@ -135,6 +104,7 @@ def routing_info(device_id):
             hostkey_verify=False,
             device_params={'name': 'iosxe'}
     ) as m:
+        filter_xml = "".join(filter_xml) if isinstance(filter_xml, list) else filter_xml.strip()
         response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
         print(json.dumps(data, indent=2))
