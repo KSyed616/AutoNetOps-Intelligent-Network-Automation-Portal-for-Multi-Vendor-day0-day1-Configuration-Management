@@ -150,7 +150,7 @@ def routing_info(device_id):
     device = db_derivation(device_id)
 
     # Step 1: Build model using pyangbind
-    model = generate_model_binding("ietf-routing")
+    model = generate_model_binding("ietf-routing@2018-03-13")
 
     # Optional: Create routing-instance and RIB filter fields
     ri = model.routing_instance.add("default")
