@@ -11,6 +11,7 @@ from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variable
     delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf, db_derivation
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from device_info import get_all_interface_ips, get_ospf_config, routing_info
+from openai_imp import generate_netconf_filter
 from schema import Device
 
 app = FastAPI()
@@ -190,7 +191,6 @@ def day1_ospf_create(request: Request, device_id: int = Query(...)):
 
 @app.get("/day1/ospf/delete", response_class=HTMLResponse)
 def day1_ospf(device_id: int = Query(...)):
-
     delete_ospf(device_id)
 
     return RedirectResponse("/dashboard")
@@ -357,21 +357,33 @@ async def config_ospf(request: Request):
     return RedirectResponse("/dashboard", status_code=303)
 
 
-
 @app.get("/info/menu", response_class=HTMLResponse)
 def info_menu(request: Request, device_id: int = Query(...)):
-
     return templates.TemplateResponse("info_menu.html", {
         "request": request,
         "device_id": device_id
     })
 
 
+@app.get("/gpt/info/device")
+def gpt_info_device(request: Request):
+    device_id = request.query_params.get("device_id")
+    ospf_model = request.query_params.get("ospf_model")
+    interface_model = request.query_params.get("interface_model")
 
-@app.get("/info/device", response_class=HTMLResponse)
-def get_info(request: Request, device_id: int = Query(...)):
-    ospf_config = get_ospf_config(device_id)
-    interface_ips = get_all_interface_ips(device_id)
+    responses = {}
+    ospf_config = None
+    interface_ips = None
+
+    if ospf_model:
+        ospf_prompt = f"Generate a NETCONF filter using {ospf_model} to retrieve OSPF configuration."
+        responses["ospf_filter"] = generate_netconf_filter(ospf_prompt, ospf_model)
+        ospf_config = get_ospf_config(device_id, responses["ospf_filter"])
+
+    if interface_model:
+        intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve interface configuration."
+        responses["interface_filter"] = generate_netconf_filter(intf_prompt, interface_model)
+        interface_ips = get_all_interface_ips(device_id, responses["ospf_filter"])
 
     return templates.TemplateResponse("info.html", {
         "request": request,

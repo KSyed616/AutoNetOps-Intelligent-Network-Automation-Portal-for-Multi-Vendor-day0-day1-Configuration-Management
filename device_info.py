@@ -9,12 +9,8 @@ from lxml import etree
 from day1 import db_derivation
 
 
-def get_ospf_config(device_id):
+def get_ospf_config(device_id, filter_xml):
     device = db_derivation(device_id)
-
-    filter_xml = """
-        <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"/>
-    """
 
     with manager.connect(
         host=device["host"],
@@ -57,13 +53,8 @@ def get_ospf_config(device_id):
             return None
 
 
-def get_all_interface_ips(device_id):
+def get_all_interface_ips(device_id, filter_xml):
     device = db_derivation(device_id)
-
-    filter_xml = """
-    <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-    </interfaces>
-    """
 
     with manager.connect(
             host=device["host"],
