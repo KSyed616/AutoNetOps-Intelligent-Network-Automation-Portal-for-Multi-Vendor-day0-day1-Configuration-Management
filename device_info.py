@@ -1,12 +1,51 @@
+import importlib
 import json
 import os
+import subprocess
+import sys
 
-import mysql.connector
+import pyangbind.lib.pybindJSON as pybindJSON
 import xmltodict
 from ncclient import manager
 from lxml import etree
 
 from day1 import db_derivation
+
+
+def generate_model_binding(model_name: str, yang_dir: str = "models", output_dir: str = "bindings"):
+    yang_file = f"{yang_dir}/{model_name}.yang"
+    output_file = f"{output_dir}/{model_name.replace('-', '_')}.py"
+    module_name = model_name.replace("-", "_")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Step 1: Find pyangbind plugin directory
+    result = subprocess.run(
+        ["python", "-c", "import pyangbind; print(pyangbind.plugin.__path__[0])"],
+        capture_output=True,
+        text=True
+    )
+    plugin_path = result.stdout.strip()
+
+    # Step 2: Generate the binding
+    subprocess.run([
+        "pyang",
+        "--plugindir", plugin_path,
+        "-f", "pybind",
+        "-o", output_file,
+        yang_file
+    ], check=True)
+
+    # Step 3: Dynamically import the generated Python module
+    spec = importlib.util.spec_from_file_location(module_name, output_file)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+
+    # Step 4: Return the top-level model class (usually same as file name)
+    class_name = module_name  # pyangbind uses same name for class
+    model_class = getattr(module, class_name)
+    return model_class
 
 
 def get_ospf_config(device_id):
@@ -17,11 +56,11 @@ def get_ospf_config(device_id):
     """
 
     with manager.connect(
-        host=device["host"],
-        port=device["port"],
-        username=device["username"],
-        password=device["password"],
-        hostkey_verify=False
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False
     ) as m:
         response = m.get_config(source='running', filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
@@ -110,48 +149,34 @@ def get_all_interface_ips(device_id):
 def routing_info(device_id):
     device = db_derivation(device_id)
 
-    filter_xml = build_routing_filter()  # dynamic generation
+    # Step 1: Build model using pyangbind
+    model = generate_model_binding("ietf-routing")
+
+    # Optional: Create routing-instance and RIB filter fields
+    ri = model.routing_instance.add("default")
+    rib = ri.ribs.rib.add("ipv4-default")
+
+    # Optionally, leave route details blank to pull all
+    route = rib.routes.route.add("0.0.0.0/0")
+
+    # Step 2: Convert model -> JSON -> Dict -> XML string
+    json_data = pybindJSON.dumps(model, mode="ietf")
+    xml_dict = json.loads(json_data)
+    filter_xml = xmltodict.unparse({"routing-state": xml_dict["routing-state"]}, pretty=True)
 
     with manager.connect(
-        host=device["host"],
-        port=device["port"],
-        username=device["username"],
-        password=device["password"],
-        hostkey_verify=False,
-        device_params={'name': 'iosxe'}
+            host=device["host"],
+            port=device["port"],
+            username=device["username"],
+            password=device["password"],
+            hostkey_verify=False,
+            device_params={'name': 'iosxe'}
     ) as m:
         response = m.get(filter=("subtree", filter_xml))
         data = xmltodict.parse(response.xml)
         print(json.dumps(data, indent=2))
         routes = parse_routes(data)
         return routes
-
-
-def build_routing_filter():
-    ns = "urn:ietf:params:xml:ns:yang:ietf-routing"
-    routing_state = etree.Element("routing-state", xmlns=ns)
-    routing_instance = etree.SubElement(routing_state, "routing-instance")
-    etree.SubElement(routing_instance, "name")
-
-    ribs = etree.SubElement(routing_instance, "ribs")
-    rib = etree.SubElement(ribs, "rib")
-    etree.SubElement(rib, "name")
-
-    routes = etree.SubElement(rib, "routes")
-    route = etree.SubElement(routes, "route")
-
-    etree.SubElement(route, "destination-prefix")
-    etree.SubElement(route, "route-preference")
-    etree.SubElement(route, "metric")
-
-    next_hop = etree.SubElement(route, "next-hop")
-    etree.SubElement(next_hop, "outgoing-interface")
-    etree.SubElement(next_hop, "next-hop-address")
-
-    etree.SubElement(route, "source-protocol")
-    etree.SubElement(route, "active")
-
-    return etree.tostring(routing_state).decode()
 
 
 def parse_routes(data):
