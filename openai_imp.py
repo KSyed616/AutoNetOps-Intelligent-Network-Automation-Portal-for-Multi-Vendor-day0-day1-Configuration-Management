@@ -4,40 +4,44 @@ import mysql.connector
 from mysql.connector import Error
 
 import openai
+from openai.types.chat import ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
 
-def generate_netconf_filter(prompt: str, model_name: str):
+
+def generate_netconf_filter(prompt: str, model_name: str, entry_name: str):
     system_prompt = f"""You are a network automation assistant. Given a request and a YANG model name, generate a 
 NETCONF subtree <filter> XML payload using only that YANG model.
 
 - Model to use: {model_name}
 - Make sure all XML tags follow the namespace and structure of the YANG model.
 - Do not explain anything. Only output a <filter> XML payload compatible with the specified YANG model.
-- Do not include XML declaration or comments.
+- Do not include XML declaration or comments, and no markups or formatting of any kind..
+- Do not include <filter> tags as manger ncclient already does this
+- All relevant information must be pullable from configuration
 """
 
     print("[GPT SYSTEM PROMPT]:")
     print(system_prompt)
     print("\n[USER PROMPT]:")
     print(prompt)
-    openai.api_key = ("sk-proj-nPK1q2MVvmuTmCxz1Ff446y1kMzHHRrPR_x0UbjGUzux1G3lwZXt-U"
-                      "-qpxSR7NKS8DHsF9udGgT3BlbkFJeXI6oMe5lUZfO5uZ_EYKCO9IKejaP9"
-                      "-GVXaPMtth6thUHlK7YPC0cqadqrUEVsNaEKAtz2u4UA")
+    openai.api_key = "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"
 
-    response = openai.ChatCompletion.create(
+    messages = [
+        ChatCompletionSystemMessageParam(role="system", content=system_prompt),
+        ChatCompletionUserMessageParam(role="user", content=prompt)
+    ]
+
+    response = openai.chat.completions.create(
         model="gpt-4o",
-        temperature=0.2,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
-        ]
+        messages=messages,
+        temperature=0
     )
 
-    result = response['choices'][0]['message']['content'].strip()
+    result = response.choices[0].message.content.strip()
 
     print("\n[GPT RESPONSE]:")
     print(result)
 
-    save_filter_to_db(model_name, result)
+    save_filter_to_db(entry_name, result)
 
     return result
 
@@ -75,7 +79,7 @@ def get_filter_from_db(model_name):
         cursor.execute("""
             SELECT filter_payload FROM netconf_filters
             WHERE model_name = %s
-        """, model_name)
+        """,  (model_name,))
         result = cursor.fetchone()
         return result[0] if result else None
     except Error as e:

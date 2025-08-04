@@ -370,19 +370,19 @@ def gpt_info_device(request: Request):
     ospf_model = request.query_params.get("ospf_model")
     interface_model = request.query_params.get("interface_model")
 
-    responses = {}
-
-    ospf_filter = get_filter_from_db(ospf_model)
+    ospf_filter = get_filter_from_db("ospf_model")
     if not ospf_filter:
-        ospf_prompt = f"Generate a NETCONF filter using {ospf_model} to retrieve OSPF configuration."
-        ospf_filter = generate_netconf_filter(ospf_prompt, ospf_model)
+        ospf_prompt = f"Generate a NETCONF filter using {ospf_model}  to retrieve router configuration"
+        ospf_filter = generate_netconf_filter(ospf_prompt, ospf_model, "ospf_model")
+
+    print(ospf_filter)
 
     ospf_config = get_ospf_config(device_id, ospf_filter)
 
-    interface_filter = get_filter_from_db(interface_model)
+    interface_filter = get_filter_from_db("interface_model")
     if not interface_filter:
-        intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve interface configuration."
-        interface_filter = generate_netconf_filter(intf_prompt, interface_model)
+        intf_prompt = f"Generate a NETCONF filter using {interface_model} to retrieve all interface configuration."
+        interface_filter = generate_netconf_filter(intf_prompt, interface_model, "interface_model")
 
     interface_ips = get_all_interface_ips(device_id, interface_filter)
 
@@ -393,10 +393,18 @@ def gpt_info_device(request: Request):
     })
 
 
-@app.get("/info/routing", response_class=HTMLResponse)
-def get_info_routing(request: Request, device_id: int = Query(...)):
+@app.get("/gpt/info/routing", response_class=HTMLResponse)
+def gpt_info_routing(request: Request, device_id: int = Query(...), routing_model: str = Query(...)):
     device = db_derivation(device_id)
-    routes = routing_info(device_id)
+
+    route_info = get_filter_from_db("routing_model")
+    if not route_info:
+        route_prompt = f"Generate a NETCONF filter using {routing_model} to retrieve routing information using routing-state as outermost element"
+        route_info = generate_netconf_filter(route_prompt, routing_model, "routing_model")
+
+    routes = routing_info(device_id, route_info)
+
+    print(routes)
 
     return templates.TemplateResponse("routes.html", {
         "request": request,

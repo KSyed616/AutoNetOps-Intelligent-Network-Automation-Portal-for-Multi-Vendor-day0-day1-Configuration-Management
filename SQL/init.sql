@@ -25,8 +25,7 @@ CREATE TABLE IF NOT EXISTS cmlData (
 
 
 CREATE TABLE IF NOT EXISTS netconf_filters (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    model_name TEXT NOT NULL,
-    filter_payload TEXT NOT NULL,
+    model_name VARCHAR(255) NOT NULL PRIMARY KEY,
+    filter_payload VARCHAR(255) NOT NULL,
     UNIQUE(model_name)
-)
+);
