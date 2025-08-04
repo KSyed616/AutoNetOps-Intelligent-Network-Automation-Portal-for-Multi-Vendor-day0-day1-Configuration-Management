@@ -23,6 +23,7 @@ NETCONF subtree <filter> XML payload using only that YANG model.
     print(system_prompt)
     print("\n[USER PROMPT]:")
     print(prompt)
+    openai.api_key = "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"
 
     messages = [
         ChatCompletionSystemMessageParam(role="system", content=system_prompt),

@@ -11,7 +11,7 @@ from day1 import get_interfaces, gen_int_temp, get_template_variables, validate,
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from device_info import get_all_interface_ips, get_ospf_config, routing_info
 from openai_imp import generate_netconf_filter, get_filter_from_db
-from schema import Device, Network
+from schema import Device
 
 app = FastAPI()
 
@@ -189,15 +189,17 @@ def day1_ospf_create(request: Request, device_id: int = Query(...)):
 
 
 @app.post("/day1/ospf/delete/selected", response_class=HTMLResponse)
-def day1_ospf(
-    device_id: int = Form(...),
-    ip: List[str] = Form(...),
-    wildcard: List[str] = Form(...),
-    area: List[str] = Form(...)
-):
-    networks = [{"ip": ip[i], "wildcard": wildcard[i], "area": area[i]} for i in range(len(ip))]
-    delete_ospf(device_id, networks)
-    return RedirectResponse("/dashboard")
+def day1_ospf(device_id: int = Form(...), networks: List[str] = Form(...)):
+    network_list = []
+    for net in networks:
+        try:
+            ip, wildcard, area = net.strip().split()
+            network_list.append({"ip": ip, "wildcard": wildcard, "area": area})
+        except ValueError:
+            continue  # skip malformed entries
+
+    delete_ospf(device_id, network_list)
+    return RedirectResponse("/dashboard", status_code=303)
 
 
 @app.get("/day1/ospf/delete/options", response_class=HTMLResponse)

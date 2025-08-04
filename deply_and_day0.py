@@ -1,5 +1,4 @@
 import os
-import re
 import time
 
 import mysql.connector
@@ -7,8 +6,7 @@ import requests
 from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 
-from schema import Login, Device
-from vendor import ciscoHandler, juniperHandler
+from schema import Device
 from vendor.ciscoHandler import CiscoHandler
 from vendor.juniperHandler import JuniperHandler
 
