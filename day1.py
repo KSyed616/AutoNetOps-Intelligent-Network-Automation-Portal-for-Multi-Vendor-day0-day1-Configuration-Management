@@ -393,24 +393,37 @@ def delete_int(device_id, interface_name):
         print(response)
 
 
-def delete_ospf(device_id: int):
+def delete_ospf(device_id: int, networks: list[dict]):
 
     device = db_derivation(device_id)
 
-    delete_payload = """
-    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    network_entries = ""
+    for net in networks:
+        network_entries += f"""
+            <network nc:operation="delete">
+                <ip>{net['ip']}</ip>
+                <wildcard>{net['wildcard']}</wildcard>
+                <area>{net['area']}</area>
+            </network>
+            """
+
+    delete_payload = f"""
+    <config xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
       <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
         <router>
           <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
-            <ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"
-                  xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
-                  nc:operation="delete">
+            <ospf>
+              <id>1</id>
+              <process-id>
+                <id>1</id>
+                {network_entries}
+              </process-id>
             </ospf>
           </router-ospf>
         </router>
       </native>
     </config>
-    """
+        """
 
     with manager.connect(
             host=device["host"],

@@ -1,18 +1,17 @@
 from typing import List
 
-from MySQLdb.constants.ER import QUERY_ON_FOREIGN_DATA_SOURCE
 from fastapi import FastAPI, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette import status
 
-from day1 import day1_hello, get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
+from day1 import get_interfaces, gen_int_temp, get_template_variables, validate, create_temp, \
     delete_int, push_config, gen_ospf_temp, get_interface_ip, delete_ospf, db_derivation
 from deply_and_day0 import get_deployed, deploy, edit_onboard, day0, day0_single, get_day0, cml_login
 from device_info import get_all_interface_ips, get_ospf_config, routing_info
 from openai_imp import generate_netconf_filter, get_filter_from_db
-from schema import Device
+from schema import Device, Network
 
 app = FastAPI()
 
@@ -189,8 +188,22 @@ def day1_ospf_create(request: Request, device_id: int = Query(...)):
     })
 
 
-@app.get("/day1/ospf/delete", response_class=HTMLResponse)
+@app.post("/day1/ospf/delete/selected", response_class=HTMLResponse)
+def day1_ospf(
+    device_id: int = Form(...),
+    ip: List[str] = Form(...),
+    wildcard: List[str] = Form(...),
+    area: List[str] = Form(...)
+):
+    networks = [{"ip": ip[i], "wildcard": wildcard[i], "area": area[i]} for i in range(len(ip))]
+    delete_ospf(device_id, networks)
+    return RedirectResponse("/dashboard")
+
+
+@app.get("/day1/ospf/delete/options", response_class=HTMLResponse)
 def day1_ospf(device_id: int = Query(...)):
+    filter_xml = get_filter_from_db("ospf_model")
+    ospf_areas = get_ospf_config(device_id, filter_xml)
     delete_ospf(device_id)
     return RedirectResponse("/dashboard")
 
@@ -399,7 +412,8 @@ def gpt_info_routing(request: Request, device_id: int = Query(...), routing_mode
 
     route_info = get_filter_from_db("routing_model")
     if not route_info:
-        route_prompt = f"Generate a NETCONF filter using {routing_model} to retrieve routing information using routing-state as outermost element"
+        route_prompt = (f"Generate a NETCONF filter using {routing_model} to retrieve routing information using "
+                        f"routing-state as outermost element")
         route_info = generate_netconf_filter(route_prompt, routing_model, "routing_model")
 
     routes = routing_info(device_id, route_info)

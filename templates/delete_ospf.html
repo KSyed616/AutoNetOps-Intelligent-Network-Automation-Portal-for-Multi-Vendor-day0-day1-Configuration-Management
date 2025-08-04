@@ -9,8 +9,23 @@
   <div class="container">
     <h2>Delete OSPF</h2>
 
-    <form method="GET" action="/day1/ospf/delete">
+    <form method="post" action="/day1/ospf/delete/selected">
       <input type="hidden" name="device_id" value="{{ device_id }}">
+
+        {% if ospf_data and ospf_data.networks %}
+            <ul>
+                {% for network in ospf_data.networks %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="networks" value="{{ network.ip }} {{ network.wildcard }} {{ network.area }}">
+                            {{ network.ip }} {{ network.wildcard }} (Area {{ network.area }})
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No OSPF networks found on this device.</p>
+        {% endif %}
       <button type="submit">Delete OSPF</button>
     </form>
   </div>
