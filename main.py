@@ -201,11 +201,14 @@ def day1_ospf(
 
 
 @app.get("/day1/ospf/delete/options", response_class=HTMLResponse)
-def day1_ospf(device_id: int = Query(...)):
+def day1_ospf(request: Request, device_id: int = Query(...)):
     filter_xml = get_filter_from_db("ospf_model")
     ospf_areas = get_ospf_config(device_id, filter_xml)
-    delete_ospf(device_id)
-    return RedirectResponse("/dashboard")
+    return templates.TemplateResponse("delete_ospf.html", {
+        "request": request,
+        "device_id": device_id,
+        "ospf_data": ospf_areas
+    })
 
 
 @app.post("/template")
